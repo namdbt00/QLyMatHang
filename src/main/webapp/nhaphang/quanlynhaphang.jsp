@@ -156,17 +156,17 @@
                             </td>
                             <td><%=donNhapHang.getIsPayment() == 0 ? "Đang giao dịch" : "Đã thanh toán"%>
                             </td>
-                            <td><%=donNhapHang.getPaymentTime()%>
+                            <td><%=donNhapHang.getPaymentTime() == null ? "" : donNhapHang.getPaymentTime()%>
                             </td>
                             <td><%=donNhapHang.getIsImportToWarehouse() == 0 ? "Chưa nhập kho" : "Đã nhập kho"%>
                             </td>
-                            <td><%=donNhapHang.getImportTime()%>
+                            <td><%=donNhapHang.getImportTime() == null ? "" : donNhapHang.getImportTime()%>
                             </td>
-                            <td><%=donNhapHang.getTotalPrice()%>
+                            <td><%=donNhapHang.getTotalPrice() == null ? "" : donNhapHang.getTotalPrice()%>
                             </td>
-                            <td><%=donNhapHang.getCreateDate()%>
+                            <td><%=donNhapHang.getCreateDate() == null ? "" : donNhapHang.getCreateDate()%>
                             </td>
-                            <td><%=donNhapHang.getConfirmDate()%>
+                            <td><%=donNhapHang.getConfirmDate() == null ? "" : donNhapHang.getConfirmDate()%>
                             </td>
                             <td style="text-align: center"><a
                                     href="cap-nhat-don-nhap-hang?id=<%=donNhapHang.getDonId()%>">
