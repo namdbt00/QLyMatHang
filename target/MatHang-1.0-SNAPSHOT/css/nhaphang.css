@@ -1,0 +1,43 @@
+.body {
+    background-color: #f4f4f4;
+    min-height: calc(100% - 50px);
+}
+
+.button {
+    border: none;
+    background-color: inherit;
+    color: #5C2C39;
+    border-radius: 5px;
+}
+
+.button1 {
+    background-color: #E7F1FF;
+    color: #2C80FE;
+}
+
+.btn-text {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.btn-create {
+    background-color: #2C80FE;
+    color: #fff
+}
+
+.ncc {
+    background-color: #FFFFFF;
+    width: 98%;
+    border-radius: 8px;
+}
+
+.tab-item {
+    padding-left: 0;
+}
+
+.list-order {
+    width: 98%;
+    background-color: white;
+    height: fit-content;
+    border-radius: 8px;
+}
