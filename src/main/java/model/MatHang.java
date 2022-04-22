@@ -17,8 +17,8 @@ public class MatHang {
     private String code;
     private String name;
     private InputStream image;
-    private Long retailPrice;
-    private Long wholesalePrice;
+    private Double retailPrice;
+    private Double wholesalePrice;
     private String description;
     private Integer unit;
     private String calculateUnit;
@@ -31,7 +31,7 @@ public class MatHang {
     private final static Locale localeVN = new Locale("vi", "VN");
     private final static NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
 
-    private String formatNumber(Long number) {
+    private String formatNumber(Double number) {
         return number == null ? currencyVN.format(0) : currencyVN.format(number);
     }
 

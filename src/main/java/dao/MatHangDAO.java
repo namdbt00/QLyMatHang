@@ -33,8 +33,8 @@ public class MatHangDAO extends DAO {
                 result.setCode(rs.getString("matHangCode"));
                 result.setName(rs.getString("name"));
                 result.setImage(rs.getBlob("image").getBinaryStream());
-                result.setRetailPrice(rs.getLong("retailPrice"));
-                result.setWholesalePrice(rs.getLong("wholesalePrice"));
+                result.setRetailPrice(rs.getDouble("retailPrice"));
+                result.setWholesalePrice(rs.getDouble("wholesalePrice"));
                 result.setDescription(rs.getString("description"));
                 int categoryId = rs.getInt("categoryID");
                 Category category = new Category();
@@ -197,8 +197,8 @@ public class MatHangDAO extends DAO {
                 m.setId(rs.getLong("matHangID"));
                 m.setName(rs.getString("name"));
                 m.setCode(rs.getString("matHangCode"));
-                m.setRetailPrice(rs.getLong("retailPrice"));
-                m.setWholesalePrice(rs.getLong("wholesalePrice"));
+                m.setRetailPrice(rs.getDouble("retailPrice"));
+                m.setWholesalePrice(rs.getDouble("wholesalePrice"));
                 m.setQuantity(rs.getInt("quantity"));
                 list.add(m);
             }
@@ -233,8 +233,8 @@ public class MatHangDAO extends DAO {
                 m.setId(rs.getLong("matHangID"));
                 m.setName(rs.getString("name"));
                 m.setCode(rs.getString("matHangCode"));
-                m.setRetailPrice(rs.getLong("retailPrice"));
-                m.setWholesalePrice(rs.getLong("wholesalePrice"));
+                m.setRetailPrice(rs.getDouble("retailPrice"));
+                m.setWholesalePrice(rs.getDouble("wholesalePrice"));
                 m.setCreatedDate(rs.getDate("createdDate"));
                 list.add(m);
             }
