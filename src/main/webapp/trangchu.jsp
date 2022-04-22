@@ -1,20 +1,8 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: T-Q-H
-  Date: 4/19/2022
-  Time: 10:49 AM
-  To change this template use File | Settings | File Templates.
---%>
-
-<%--
-  Created by IntelliJ IDEA.
-  User: T-Q-H
-  Date: 4/18/2022
-  Time: 1:31 PM
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="java.util.Locale" %>
+<%@ page import="java.text.NumberFormat" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix ="c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,7 +41,7 @@
             </div>
         </li>
         <li class="sidebar-item nav-item" value="1">
-            <div  class="nav-link d-flex">
+            <div class="nav-link d-flex">
                 <div class="icon-item">
                     <i class="fa-solid fa-cart-plus fa-lg"></i>
                 </div>
@@ -80,7 +68,8 @@
                     <form action="search" method="post">
                         <div id="search" class="input-group mb-3">
                             <input name="txt" type="text" class="form-control shadow-none" placeholder="Tìm kiếm">
-                            <button type="submit" class="input-group-text" title="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            <button type="submit" class="input-group-text" title="Tìm kiếm"><i
+                                    class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
                     </form>
                     <div>
@@ -97,20 +86,23 @@
                             <th scope="col">Gía bán lẻ</th>
                             <th scope="col">Gía bán sỉ</th>
                             <th scope="col">Số lượng</th>
-                            <th class="table-function" ></th>
+                            <th class="table-function"></th>
                         </tr>
                         </thead>
                         <tbody>
                         <c:forEach items="${data}" var="m">
                             <tr>
-                                <td value="${m.getId()}" nameMatHang="${m.getName()}">${m.getCode()}</td>
-                                <td >${m.getName()}</td>
-                                <td>${m.getRetailPrice()}</td>
-                                <td>${m.getWholesalePrice()}</td>
-                                <td>${m.getQuantity()}</td>
+                                <td style="vertical-align: middle;" value="${m.getId()}"
+                                    nameMatHang="${m.getName()}">${m.getCode()}</td>
+                                <td style="vertical-align: middle;">${m.getName()}</td>
+                                <td style="vertical-align: middle;">${m.getRetailPriceF()}</td>
+                                <td style="vertical-align: middle;">${m.getWholesalePriceF()}</td>
+                                <td style="vertical-align: middle;">${m.getQuantity()}</td>
                                 <td class="table-function text-center">
-                                    <button type="button" title="Sửa" class="btn btn-save btn-save-table"><i class="fa-solid fa-pencil"></i></button>
-                                    <button type="button" title="Xóa" class="btn btn-delete btn-delete-table""><i class="fa-solid fa-trash"></i></button>
+                                    <button type="button" title="Sửa" class="btn btn-save btn-save-table">
+                                        <i class="fa-solid fa-pencil"></i></button>
+                                    <button type="button" title="Xóa" class="btn btn-delete btn-delete-table">
+                                        <i class="fa-solid fa-trash"></i></button>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -139,18 +131,20 @@
         window.location.href = "sua-mat-hang?idEdit=" + value;
     });
 
-    $(document).on('click','.btn-delete-table',function(){
+    $(document).on('click', '.btn-delete-table', function () {
         var value = $(this).parent().parent().children().first().attr('value');
         var name = $(this).parent().parent().children().first().attr('nameMatHang');
-        doDelete(value,name);
+        doDelete(value, name);
     });
-    function doDelete(id,name){
-        if(confirm("Bạn có muốn xóa mặt hàng <"+name+">")) {
+
+    function doDelete(id, name) {
+        if (confirm("Bạn có muốn xóa mặt hàng <" + name + ">")) {
             window.location = "delete?id=" + id;
         }
     }
-    function logOut(){
-        if(confirm("Bạn có muốn đăng xuất không ?")){
+
+    function logOut() {
+        if (confirm("Bạn có muốn đăng xuất không ?")) {
             window.location.href = "/MatHang/"
         }
     }

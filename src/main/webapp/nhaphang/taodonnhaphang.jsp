@@ -13,7 +13,7 @@
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
     SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
-    SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy HH:hh:ss");
+    SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     if (isCreate) {
         date = dateFormat1.format(new Date());
         code = newCode;
@@ -63,6 +63,18 @@
 </head>
 
 <body>
+<div hidden>
+    <input hidden value="<%=code%>" id="code">
+    <%if (don != null) {%>
+    <input hidden value="<%=don.getId()%>" id="bill-id">
+    <input value="<%=don.getHasPaid() ? don.getPaymentTime().getTime() : -1 %>"
+           id="payment-time" type="number" hidden>
+    <input value="<%=don.getHasConfirmed() ? don.getConfirmTime().getTime() : -1 %>"
+           id="confirm-time" type="number" hidden>
+    <input value="<%=don.getHasReceived() ? don.getImportTime().getTime() : -1 %>"
+           id="import-time" type="number" hidden>
+    <%}%>
+</div>
 <div id="page" class="d-flex">
     <nav id="sidebar" class="nav flex-column">
         <li class="nav-item logo">
@@ -99,7 +111,6 @@
 
 
         <div class="body">
-
             <div class="top container-fluid pl-3 pr-3 pt-2 pb-2" style="width: 99%">
                 <div class="d-flex justify-content-between">
                     <div class="d-flex">
@@ -124,13 +135,6 @@
                 <div class="d-flex">
                     <h3>
                         <%=code%>
-                        <input hidden value="<%=code%>" id="code">
-                        <%if (don != null) {%>
-                        <input hidden value="<%=don.getId()%>" id="bill-id">
-                        <input hidden value="" id="payment-time">
-                        <input hidden value="" id="confirm-time">
-                        <input hidden value="" id="import-time">
-                        <%}%>
                     </h3>
                     <p class="pt-2" style="margin-left: 5px;">
                         <%=date%>
@@ -150,20 +154,31 @@
                 </div>
 
                 <div class="input dropdown">
-                    <input id="key-provider" class="form-control mb-3 " type="text"
+                    <%if (!isCreate) {%>
+
+                    <p class="border rounded-2 p-2" style="color: black;font-weight: normal;">
+                        <%=don.getProvider().get()%>
+                    </p>
+
+                    <% } else { %>
+
+                    <input id="key-provider" class="form-control mb-3 shadow-none" type="text"
                            placeholder="Tìm kiếm nhà cung cấp..." required
-                           <%if(!isCreate) {%>readonly value="<%=don.getProvider().get()%>" <%}%>
+<%--                           <%if(!isCreate) {%>readonly value="<%=don.getProvider().get()%>" <%}%>--%>
 
                     >
+
+                    <%}%>
                     <div class="rbt-menu dropdown-menu w-100" id="dropdown-provider"
                          aria-labelledby="actionToggle"></div>
                 </div>
+
             </div>
 
             <div class="ncc pt-2 pb-2 container-fluid">
                 <h4>Thông tin sản phẩm</h4>
                 <div <%if(!isCreate) {%>hidden<%}%> class="input dropdown">
-                    <input id="key-product" class="form-control mb-3 " type="text"
+                    <input id="key-product" class="form-control mb-3 shadow-none" type="text"
                            placeholder="Tìm kiếm sản phẩm...">
                     <div class="rbt-menu dropdown-menu w-100" id="dropdown-product"></div>
                 </div>
@@ -250,8 +265,8 @@
                     <%--                    <p id="paid" style="display:block">Đã thanh toán: 0đ</p>--%>
                     <%--                    <p id="rest" style="display:block">Còn phải trả: 52.000.000đ</p>--%>
                     <p></p>
-                    <button <%if(don.getHasPaid()){%>hidden<%}%> class="button btn-create p-1 mb-2"
-                            id="confirm-payment">
+                    <button <%if(don.getHasPaid()){%>hidden<%}%> class="button btn-create p-2 mb-2"
+                            id="confirm-payment" style="width: 140px">
                         Xác nhận thanh toán
                     </button>
                 </div>
@@ -267,8 +282,8 @@
                     <%--                    <p id="total" style="display:block">Tổng tiền: 52.000.000</p>--%>
                     <p></p>
 
-                    <button <%if(don.getHasReceived()){%>hidden<%}%> class="button btn-create p-1 mb-2"
-                            id="confirm-import">
+                    <button <%if(don.getHasReceived()){%>hidden<%}%> class="button btn-create p-2 mb-2"
+                            id="confirm-import" style="width: 140px">
                         Xác nhận nhập kho
                     </button>
                 </div>
@@ -481,12 +496,21 @@
         $('#balance').text(format(balance))
     }
 
-    function getBodyRequest() {
+    function getCreateBillBody() {
         return {
             code: $("#code").val(),
             products: data.products,
             // discount: data.discount,
             providerId: data.provider
+        }
+    }
+
+    function getUpdateBillBody() {
+        return {
+            id: $("#bill-id").val(),
+            confirmTime: $("#confirm-time").val(),
+            importTime: $("#import-time").val(),
+            paymentTime: $("#payment-time").val()
         }
     }
 
@@ -587,7 +611,7 @@
     }
 
     $("#create-bill").on('click', function () {
-        var data = getBodyRequest();
+        var data = getCreateBillBody();
         $.ajax({
             url: `/MatHang/create-bill`,
             type: 'POST',
@@ -595,6 +619,7 @@
             data: JSON.stringify(data),
             success: function (result) {
                 if (result.isSuccessful) {
+                    $('#key-provider').val(null)
                     setShowMessageAferReload(result.message, result.isSuccessful)
                     window.location.href = `/MatHang/cap-nhat-don-nhap-hang?id=\${result.id}`
                 } else {
@@ -605,12 +630,12 @@
     })
 
     $("#confirm-bill").on('click', function () {
-        var data = getBodyRequest();
+        var data = getUpdateBillBody();
         $.ajax({
             url: `/MatHang/confirm-bill`,
             type: 'POST',
             dataType: 'json',
-            data: {'id': $('#bill-id').val()},
+            data: data,
             success: function (result) {
                 setShowMessageAferReload(result.message, result.isSuccessful)
             }
@@ -618,12 +643,12 @@
     })
 
     $("#confirm-import").on('click', function () {
-        var data = getBodyRequest();
+        var data = getUpdateBillBody();
         $.ajax({
             url: `/MatHang/confirm-import`,
             type: 'POST',
             dataType: 'json',
-            data: {'id': $('#bill-id').val()},
+            data: data,
             success: function (result) {
                 setShowMessageAferReload(result.message, result.isSuccessful)
             }
@@ -631,12 +656,12 @@
     })
 
     $("#confirm-payment").on('click', function () {
-        var data = getBodyRequest();
+        var data = getUpdateBillBody();
         $.ajax({
             url: `/MatHang/confirm-payment`,
             type: 'POST',
             dataType: 'json',
-            data: {'id': $('#bill-id').val()},
+            data: data,
             success: function (result) {
                 setShowMessageAferReload(result.message, result.isSuccessful)
             }

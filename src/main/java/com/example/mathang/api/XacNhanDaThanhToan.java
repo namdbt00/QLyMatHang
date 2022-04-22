@@ -21,12 +21,15 @@ public class XacNhanDaThanhToan extends HttpServlet {
             HttpServletResponse resp
     ) throws IOException {
         Integer id = Integer.valueOf(req.getParameter("id"));
+        Long importTime = Long.valueOf(req.getParameter("importTime"));
+        Long confirmTime = Long.valueOf(req.getParameter("confirmTime"));
+        Long paymentTime = Long.valueOf(req.getParameter("paymentTime"));
         NhapHangDAO dao = new NhapHangDAO();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(200);
         ResponseMessage message;
-        if (dao.xacNhanDaThanhToan(id)) {
+        if (dao.xacNhanDaThanhToan(id, confirmTime, importTime)) {
             message = ResponseMessage.builder()
                     .message("Xác nhận đã thanh toán thành công")
                     .isSuccessful(true).build();

@@ -9,7 +9,6 @@ import model.Category;
 import model.ConversionUnit;
 import model.MatHang;
 
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -31,16 +30,16 @@ import java.util.Base64;
 import java.util.List;
 
 
-
-
 @WebServlet(name = "suaMathangServlet", value = "/sua-mat-hang")
 @MultipartConfig(maxFileSize = 16177216)//1.5mb
 public class SuaMatHangServlet extends HttpServlet {
     public static final int DEFAULT_BUFFER_SIZE = 8192;
     public List<Category> categories = null;
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         showEditForm(request, response);
     }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -49,6 +48,7 @@ public class SuaMatHangServlet extends HttpServlet {
             throwables.printStackTrace();
         }
     }
+
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 //        int id = Integer.parseInt(request.getParameter("id"));
@@ -60,30 +60,30 @@ public class SuaMatHangServlet extends HttpServlet {
         url = "/themmathang/suamathang.jsp";
         MatHangDAO matHangDAO = new MatHangDAO();
         int id = Integer.parseInt(request.getParameter("idEdit"));
-        System.out.println("Edit id: "+id);
+        System.out.println("Edit id: " + id);
         MatHang matHang = matHangDAO.getMatHangById(id);
         System.out.println("Id mat hang: " + matHang.getId());
 
         CategoryDAO categoryDAO = new CategoryDAO();
         categories = categoryDAO.getListCategory();
 
-        for(int i = 0; i < categories.size(); i++) {
+        for (int i = 0; i < categories.size(); i++) {
             System.out.println(categories.get(i).getName());
         }
 
-            // json to list
-        if(matHang.getAttribute()!=null && !matHang.getAttribute().equals("")) {
+        // json to list
+        if (matHang.getAttribute() != null && !matHang.getAttribute().equals("")) {
             String[] tokens = matHang.getAttribute().split("-");
             List<Atb> listAtb = createListAtbFromJsonString(tokens[0]);
             List<ConversionUnit> listUnit = createListUnitFromJsonString(tokens[1]);
             System.out.println(matHang.getAttribute());
             System.out.println(tokens[0]);
             System.out.println(tokens[1]);
-            System.out.println("List unit:  "+listUnit.size());
+            System.out.println("List unit:  " + listUnit.size());
             request.setAttribute("listAtb", listAtb);
             request.setAttribute("listUnit", listUnit);
         }
-            // gan vao request
+        // gan vao request
         request.setAttribute("listCategory", categories);
         request.setAttribute("matHang", matHang);
 
@@ -122,9 +122,9 @@ public class SuaMatHangServlet extends HttpServlet {
     public ArrayList<Atb> createListAtbFromJsonString(String json) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<Atb> result = null;
-        try{
+        try {
             result = new ArrayList<Atb>(Arrays.asList(mapper.readValue(json, Atb[].class)));
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return result;
@@ -133,9 +133,9 @@ public class SuaMatHangServlet extends HttpServlet {
     public ArrayList<ConversionUnit> createListUnitFromJsonString(String json) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<ConversionUnit> result = null;
-        try{
+        try {
             result = new ArrayList<ConversionUnit>(Arrays.asList(mapper.readValue(json, ConversionUnit[].class)));
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return result;
@@ -148,8 +148,8 @@ public class SuaMatHangServlet extends HttpServlet {
         String name = toUTF8String(request.getParameter("productname"));
         Part part = request.getPart("img");
         System.out.println(part.getContentType());
-        Double retailPrice = Double.parseDouble(request.getParameter("productretailprice"));
-        Double wholesalePrice = Double.parseDouble(request.getParameter("productwholesaleprice"));
+        Long retailPrice = Long.parseLong(request.getParameter("productretailprice"));
+        Long wholesalePrice = Long.parseLong(request.getParameter("productwholesaleprice"));
         Integer unit = Integer.parseInt(request.getParameter("weightunit"));
         String calculateUnit = toUTF8String(request.getParameter("productunit"));
         Float weight = Float.parseFloat(request.getParameter("productweight"));
@@ -163,16 +163,16 @@ public class SuaMatHangServlet extends HttpServlet {
         Category category = getCategoryById(categoryId);
         MatHang mathang;
         InputStream is = part.getInputStream();
-        System.out.println("available : "+is.available());
+        System.out.println("available : " + is.available());
         boolean checkdao = true;
-        if(is.available() != 0) {
+        if (is.available() != 0) {
             System.out.println("Include image");
             InputStream image = part.getInputStream();
             mathang = buildMatHang(id, code, name, image, retailPrice,
                     wholesalePrice, unit, calculateUnit,
                     weight, description, category, attribute);
             checkdao = daoUpdateWithImage(mathang);
-        }else{
+        } else {
             System.out.println("Not include image");
             mathang = buildMatHangWithoutImage(id, code, name, retailPrice,
                     wholesalePrice, unit, calculateUnit,
@@ -181,43 +181,42 @@ public class SuaMatHangServlet extends HttpServlet {
 
         }
 
-        if(!checkdao) {
+        if (!checkdao) {
             String htmlMessage = "Sửa thành công";
             String check = "1";
 
             ServletContext sc = request.getServletContext();
             sc.setAttribute("messages", htmlMessage);
             sc.setAttribute("check", check);
-            response.sendRedirect("/MatHang/sua-mat-hang?idEdit="+id);
-        }else {
+            response.sendRedirect("/MatHang/sua-mat-hang?idEdit=" + id);
+        } else {
             String htmlMessage = "Mã mặt hàng đã tồn tại";
             String check = "1";
 
             ServletContext sc = request.getServletContext();
             sc.setAttribute("messages", htmlMessage);
             sc.setAttribute("check", check);
-            response.sendRedirect("/MatHang/sua-mat-hang?idEdit="+id);
+            response.sendRedirect("/MatHang/sua-mat-hang?idEdit=" + id);
         }
-
 
 
     }
 
     private String createAttributeString(int numRowAtb, int numRowUnit, HttpServletRequest request) {
         String attribute = "";
-        List<Atb> atbs =new ArrayList<>();
+        List<Atb> atbs = new ArrayList<>();
         List<ConversionUnit> units = new ArrayList<>();
-        for(int i = 0; i < numRowAtb; i++){
-            int k = i+1;
-            String atbName1 = request.getParameter("atbName"+k);
-            String atbValue1 = request.getParameter("atbValue"+k);
+        for (int i = 0; i < numRowAtb; i++) {
+            int k = i + 1;
+            String atbName1 = request.getParameter("atbName" + k);
+            String atbValue1 = request.getParameter("atbValue" + k);
             Atb atb = new Atb(atbName1, atbValue1);
             atbs.add(atb);
         }
-        for(int i = 0; i < numRowUnit; i++){
-            int k = i+1;
-            String unitName1 = request.getParameter("unitName"+k);
-            Integer unitValue1 = Integer.parseInt(request.getParameter("unitValue"+k));
+        for (int i = 0; i < numRowUnit; i++) {
+            int k = i + 1;
+            String unitName1 = request.getParameter("unitName" + k);
+            Integer unitValue1 = Integer.parseInt(request.getParameter("unitValue" + k));
             ConversionUnit unit = new ConversionUnit(unitName1, unitValue1);
             units.add(unit);
         }
@@ -228,18 +227,18 @@ public class SuaMatHangServlet extends HttpServlet {
         return toUTF8String(attribute);
     }
 
-    public Category getCategoryById(Integer categoryId){
+    public Category getCategoryById(Integer categoryId) {
         Category category = new Category();
-        for(int i = 0; i < categories.size(); i++){
-            if(categories.get(i).getCategoryId() == categoryId) {
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getCategoryId() == categoryId) {
                 category = categories.get(i);
             }
         }
         return category;
     }
 
-    public MatHang buildMatHang(Long id, String code, String name,InputStream image, Double retailPrice,
-                                Double wholesalePrice, Integer unit, String calculateUnit,
+    public MatHang buildMatHang(Long id, String code, String name, InputStream image, Long retailPrice,
+                                Long wholesalePrice, Integer unit, String calculateUnit,
                                 Float weight, String description, Category category, String attribute) {
         MatHang mathang = MatHang.builder()
                 .id(id)
@@ -258,9 +257,9 @@ public class SuaMatHangServlet extends HttpServlet {
         return mathang;
     }
 
-    public MatHang buildMatHangWithoutImage(Long id, String code, String name, Double retailPrice,
-                                Double wholesalePrice, Integer unit, String calculateUnit,
-                                Float weight, String description, Category category, String attribute) {
+    public MatHang buildMatHangWithoutImage(Long id, String code, String name, Long retailPrice,
+                                            Long wholesalePrice, Integer unit, String calculateUnit,
+                                            Float weight, String description, Category category, String attribute) {
         MatHang mathang = MatHang.builder()
                 .id(id)
                 .code(code)
@@ -289,7 +288,7 @@ public class SuaMatHangServlet extends HttpServlet {
         return check;
     }
 
-    public String toUTF8String(String string){
+    public String toUTF8String(String string) {
         String result = "";
         byte[] bytes = string.getBytes(StandardCharsets.ISO_8859_1);
         result = new String(bytes, StandardCharsets.UTF_8);

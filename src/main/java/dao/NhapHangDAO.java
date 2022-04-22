@@ -11,10 +11,13 @@ import model.NhaCungCap;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NhapHangDAO extends DAO {
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public ArrayList<DonNhapHang> getListDonNhapHang(String action, String keyword) {
 
@@ -54,11 +57,11 @@ public class NhapHangDAO extends DAO {
                 donNhapHang.setPaymentTime(rs.getTimestamp("paymentTime"));
                 donNhapHang.setIsImportToWarehouse(rs.getInt("isImportToWarehouse"));
                 donNhapHang.setImportTime(rs.getTimestamp("importTime"));
-                donNhapHang.setCreateDate(rs.getDate("createdDate"));
-                donNhapHang.setConfirmDate(rs.getDate("confirmDate"));
+                donNhapHang.setCreateDate(rs.getTimestamp("createdDate"));
+                donNhapHang.setConfirmDate(rs.getTimestamp("confirmDate"));
                 donNhapHang.setIsConfirm(rs.getInt("isConfirm"));
                 donNhapHang.setNhaCungCap(rs.getString("nhaCungCap"));
-                donNhapHang.setTotalPrice(rs.getString("totalPrice"));
+                donNhapHang.setTotalPrice(rs.getLong("totalPrice"));
                 lisDonNhapHang.add(donNhapHang);
             }
         } catch (Exception e) {
@@ -133,10 +136,10 @@ public class NhapHangDAO extends DAO {
                         .hasPaid(rs.getInt("isPayment") == 1)
                         .hasReceived(rs.getInt("isImportToWarehouse") == 1)
                         .hasConfirmed(rs.getInt("isConfirm") == 1)
-                        .importTime(rs.getDate("importTime"))
-                        .paymentTime(rs.getDate("paymentTime"))
-                        .confirmTime(rs.getDate("confirmDate"))
-                        .createdTime(rs.getTime("createdDate"))
+                        .importTime(rs.getTimestamp("importTime"))
+                        .paymentTime(rs.getTimestamp("paymentTime"))
+                        .confirmTime(rs.getTimestamp("confirmDate"))
+                        .createdTime(rs.getTimestamp("createdDate"))
                         .build();
                 NhaCungCapDAO dao = new NhaCungCapDAO();
                 NhaCungCap ncc = dao.layNhaCungCap(providerId);
@@ -167,11 +170,20 @@ public class NhapHangDAO extends DAO {
         return null;
     }
 
-    public boolean xacNhanDonNhapKho(Integer id) {
-        String sql = "UPDATE donnhaphang SET confirmDate = now(), isConfirm = 1 WHERE donID = ?;";
+    public boolean xacNhanDonNhapHang(Integer id, Long paymentTime, Long importTime) {
+        String sql = "call updateDon(?,?,?,?,?,?,?,null)";
         try {
+            Timestamp confirmT = new Timestamp(System.currentTimeMillis());
+            Timestamp importT = importTime == -1 ? null : new Timestamp(importTime);
+            Timestamp paymentT = paymentTime == -1 ? null : new Timestamp(paymentTime);
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
+            ps.setInt(2, paymentTime == -1 ? 0 : 1);
+            ps.setInt(4, importTime == -1 ? 0 : 1);
+            ps.setInt(7, 1);
+            ps.setTimestamp(3, paymentT);
+            ps.setTimestamp(5, importT);
+            ps.setTimestamp(6, confirmT);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -179,11 +191,20 @@ public class NhapHangDAO extends DAO {
         return false;
     }
 
-    public boolean xacNhanDaNhapHang(Integer id) {
-        String sql = "UPDATE donnhaphang SET isImportToWarehouse = 1, importTime = now() WHERE donID = ?;";
+    public boolean xacNhanDaNhapHang(Integer id, Long confirmTime, Long paymentTime) {
+        String sql = "call updateDon(?,?,?,?,?,?,?,null)";
         try {
+            Timestamp importT = new Timestamp(System.currentTimeMillis());
+            Timestamp confirmT = confirmTime == -1 ? null : new Timestamp(confirmTime);
+            Timestamp paymentT = paymentTime == -1 ? null : new Timestamp(paymentTime);
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
+            ps.setInt(2, paymentTime == -1 ? 0 : 1);
+            ps.setInt(4, 1);
+            ps.setInt(7, confirmTime == -1 ? 0 : 1);
+            ps.setTimestamp(3, paymentT);
+            ps.setTimestamp(5, importT);
+            ps.setTimestamp(6, confirmT);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -191,11 +212,20 @@ public class NhapHangDAO extends DAO {
         return false;
     }
 
-    public boolean xacNhanDaThanhToan(Integer id) {
-        String sql = "UPDATE donnhaphang SET isPayment = 1, paymentTime = now() WHERE donID = ?;";
+    public boolean xacNhanDaThanhToan(Integer id, Long confirmTime, Long importTime) {
+        String sql = "call updateDon(?,?,?,?,?,?,?,null)";
         try {
+            Timestamp paymentT = new Timestamp(System.currentTimeMillis());
+            Timestamp importT = importTime == -1 ? null : new Timestamp(importTime);
+            Timestamp confirmT = confirmTime == -1 ? null : new Timestamp(confirmTime);
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
+            ps.setInt(2, 1);
+            ps.setInt(4, importTime == -1 ? 0 : 1);
+            ps.setInt(7, confirmTime == -1 ? 0 : 1);
+            ps.setTimestamp(3, paymentT);
+            ps.setTimestamp(5, importT);
+            ps.setTimestamp(6, confirmT);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
             e.printStackTrace();

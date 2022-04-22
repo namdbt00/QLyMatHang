@@ -1,13 +1,28 @@
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="model.DonNhapHang" %><%--
-  Created by IntelliJ IDEA.
-  User: donam
-  Date: 12/04/2022
-  Time: 21:39
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="model.DonNhapHang" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.Locale" %>
+<%@ page import="java.text.NumberFormat" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+
+<%!
+    SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+    Locale localeVN = new Locale("vi", "VN");
+    NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
+
+    public String formatTime(Date date) {
+        if (date == null) return "";
+        else return f.format(date);
+    }
+
+    public String formatNumber(Long number) {
+        return number == null ? currencyVN.format(0) : currencyVN.format(number);
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,7 +63,7 @@
             </div>
         </li>
         <li class="sidebar-item nav-item active" value="1">
-            <div  class="nav-link d-flex">
+            <div class="nav-link d-flex">
                 <div class="icon-item">
                     <i class="fa-solid fa-cart-plus fa-lg"></i>
                 </div>
@@ -96,8 +111,8 @@
                     <li class="nav-item">
                         <% if (fromFilterPage) {%>
                         <a id="tab2" class="nav-link " aria-current="page" href="quan-ly-nhap-hang-filter"
-                           style="<%="color: #2C80FE;padding-left: 0;padding-right: 0;border-bottom: 1px solid #000;"%>">Đang
-                            giao dịch</a>
+                           style="<%="color: #2C80FE;padding-left: 0;padding-right: 0;border-bottom: 1px solid #000;"%>">
+                            Đang giao dịch</a>
                         <%} else {%>
                         <a id="tab2" class="nav-link " aria-current="page" href="quan-ly-nhap-hang-filter"
                            style="<%="padding-left: 0;padding-right: 0;"%>">Đang giao dịch</a>
@@ -110,7 +125,8 @@
                 <div>
                     <form method="post">
                         <div class="input">
-                            <input id="search" class="form-control mb-3" type="text" name="keyword" style="width: 100%;"
+                            <input id="search" class="form-control mb-3 shadow-none" type="text" name="keyword"
+                                   style="width: 100%;"
                                    placeholder="Tìm kiếm theo tên hoặc nhà cung cấp">
                         </div>
                     </form>
@@ -127,8 +143,8 @@
                             <th>Nhập kho</th>
                             <th>Thời gian nhập kho</th>
                             <th>Tổng tiền</th>
-                            <th>Ngày tạo đơn</th>
-                            <th>Ngày duyệt đơn</th>
+                            <th>Thời gian tạo đơn</th>
+                            <th>Thời gian duyệt đơn</th>
                             <th>Thao tác</th>
                         </tr>
                         </thead>
@@ -150,23 +166,23 @@
 
                         %>
                         <tr>
-                            <td><%=donNhapHang.getTenDon()%>
+                            <td style="text-align: center; vertical-align: middle"><%=donNhapHang.getTenDon()%>
                             </td>
-                            <td><%=donNhapHang.getNhaCungCap()%>
+                            <td style="vertical-align: middle;"><%=donNhapHang.getNhaCungCap()%>
                             </td>
-                            <td><%=donNhapHang.getIsPayment() == 0 ? "Đang giao dịch" : "Đã thanh toán"%>
+                            <td style="vertical-align: middle;"><%=donNhapHang.getIsPayment() == 0 ? "Đang giao dịch" : "Đã thanh toán"%>
                             </td>
-                            <td><%=donNhapHang.getPaymentTime()%>
+                            <td style="text-align: center; vertical-align: middle"><%=formatTime(donNhapHang.getPaymentTime())%>
                             </td>
-                            <td><%=donNhapHang.getIsImportToWarehouse() == 0 ? "Chưa nhập kho" : "Đã nhập kho"%>
+                            <td style="vertical-align: middle;"><%=donNhapHang.getIsImportToWarehouse() == 0 ? "Chưa nhập kho" : "Đã nhập kho"%>
                             </td>
-                            <td><%=donNhapHang.getImportTime()%>
+                            <td style="text-align: center; vertical-align: middle"><%=formatTime(donNhapHang.getImportTime())%>
                             </td>
-                            <td><%=donNhapHang.getTotalPrice()%>
+                            <td style="vertical-align: middle;"><%=formatNumber(donNhapHang.getTotalPrice())%>
                             </td>
-                            <td><%=donNhapHang.getCreateDate()%>
+                            <td style="text-align: center; vertical-align: middle"><%=formatTime(donNhapHang.getCreateDate())%>
                             </td>
-                            <td><%=donNhapHang.getConfirmDate()%>
+                            <td style="text-align: center; vertical-align: middle"><%=formatTime(donNhapHang.getConfirmDate())%>
                             </td>
                             <td style="text-align: center"><a
                                     href="cap-nhat-don-nhap-hang?id=<%=donNhapHang.getDonId()%>">

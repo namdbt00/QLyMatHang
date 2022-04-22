@@ -79,8 +79,8 @@ public class ThemMatHangServlet extends HttpServlet {
         String name = toUTF8String(request.getParameter("productname"));
         Part part = request.getPart("img");
         InputStream image = part.getInputStream();
-        Double retailPrice = Double.parseDouble(request.getParameter("productretailprice"));
-        Double wholesalePrice = Double.parseDouble(request.getParameter("productwholesaleprice"));
+        Long retailPrice = Long.parseLong(request.getParameter("productretailprice"));
+        Long wholesalePrice = Long.parseLong(request.getParameter("productwholesaleprice"));
         Integer unit = Integer.parseInt(request.getParameter("weightunit"));
         String calculateUnit = toUTF8String(request.getParameter("productunit"));
         Float weight = Float.parseFloat(request.getParameter("productweight"));
@@ -154,8 +154,8 @@ public class ThemMatHangServlet extends HttpServlet {
         return category;
     }
 
-    public MatHang buildMatHang(String code, String name,InputStream image, Double retailPrice,
-                                Double wholesalePrice, Integer unit, String calculateUnit,
+    public MatHang buildMatHang(String code, String name,InputStream image, Long retailPrice,
+                                Long wholesalePrice, Integer unit, String calculateUnit,
                                 Float weight, String description, Category category, String attribute) {
         MatHang mathang = MatHang.builder()
                 .code(code)

@@ -1,7 +1,7 @@
 package com.example.mathang;
 
-import model.MatHang;
 import dao.MatHangDAO;
+import model.MatHang;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,8 +18,7 @@ public class DanhSachMatHangServlet extends HttpServlet {
             throws ServletException, IOException {
         MatHangDAO mh = new MatHangDAO();
         List<MatHang> list = mh.getall();
-        System.out.println(list.size());
-        request.setAttribute("data",list);
+        request.setAttribute("data", list);
         RequestDispatcher dispatcher = request.getRequestDispatcher("trangchu.jsp");
         dispatcher.forward(request, response);
     }
