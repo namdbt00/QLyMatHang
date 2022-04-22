@@ -13,6 +13,7 @@ import java.util.Date;
 public class DonNhapHang implements Serializable {
 
     private int donId, nhaCungCapID, isPayment, isImportToWarehouse, isConfirm;
-    private String tenDon, nhaCungCap, totalPrice;
+    private String tenDon, nhaCungCap;
+    private Long totalPrice;
     private Date paymentTime, importTime, createDate, confirmDate;
 }

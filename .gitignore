@@ -152,11 +152,10 @@ fabric.properties
 # Intellij
 .idea/
 *.iml
-*.iws
 
 # Mac
 .DS_Store
 
 # Maven
-MatHang/log/
-MatHang/target/
+log/
+target/

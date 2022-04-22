@@ -13,7 +13,7 @@
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
     SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
-    SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy HH:hh:ss");
+    SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     if (isCreate) {
         date = dateFormat1.format(new Date());
         code = newCode;
@@ -63,6 +63,18 @@
 </head>
 
 <body>
+<div hidden>
+    <input hidden value="<%=code%>" id="code">
+    <%if (don != null) {%>
+    <input hidden value="<%=don.getId()%>" id="bill-id">
+    <input value="<%=don.getHasPaid() ? don.getPaymentTime().getTime() : -1 %>"
+           id="payment-time" type="number" hidden>
+    <input value="<%=don.getHasConfirmed() ? don.getConfirmTime().getTime() : -1 %>"
+           id="confirm-time" type="number" hidden>
+    <input value="<%=don.getHasReceived() ? don.getImportTime().getTime() : -1 %>"
+           id="import-time" type="number" hidden>
+    <%}%>
+</div>
 <div id="page" class="d-flex">
     <nav id="sidebar" class="nav flex-column">
         <li class="nav-item logo">
@@ -79,7 +91,7 @@
             </div>
         </li>
         <li class="sidebar-item nav-item active" value="1">
-            <div  class="nav-link d-flex">
+            <div class="nav-link d-flex">
                 <div class="icon-item">
                     <i class="fa-solid fa-cart-plus fa-lg"></i>
                 </div>
@@ -99,7 +111,6 @@
 
 
         <div class="body">
-
             <div class="top container-fluid pl-3 pr-3 pt-2 pb-2" style="width: 99%">
                 <div class="d-flex justify-content-between">
                     <div class="d-flex">
@@ -124,10 +135,6 @@
                 <div class="d-flex">
                     <h3>
                         <%=code%>
-                        <input hidden value="<%=code%>" id="code">
-                        <%if (don != null) {%>
-                        <input hidden value="<%=don.getId()%>" id="bill-id">
-                        <%}%>
                     </h3>
                     <p class="pt-2" style="margin-left: 5px;">
                         <%=date%>
@@ -146,32 +153,35 @@
                     </div>
                 </div>
 
-                <form method="post">
-                    <div class="input dropdown">
-                        <input id="key-provider" class="form-control mb-3 " type="text"
-                               placeholder="Tìm kiếm nhà cung cấp..." required
-                               <%if(!isCreate) {%>readonly value="<%=don.getProvider().get()%>" <%}%>
+                <div class="input dropdown">
+                    <%if (!isCreate) {%>
 
-                        >
-                        <div class="rbt-menu dropdown-menu w-100" id="dropdown-provider"
-                             aria-labelledby="actionToggle"></div>
-                    </div>
+                    <p class="border rounded-2 p-2" style="color: black;font-weight: normal;">
+                        <%=don.getProvider().get()%>
+                    </p>
 
+                    <% } else { %>
 
-                </form>
+                    <input id="key-provider" class="form-control mb-3 shadow-none" type="text"
+                           placeholder="Tìm kiếm nhà cung cấp..." required
+<%--                           <%if(!isCreate) {%>readonly value="<%=don.getProvider().get()%>" <%}%>--%>
+
+                    >
+
+                    <%}%>
+                    <div class="rbt-menu dropdown-menu w-100" id="dropdown-provider"
+                         aria-labelledby="actionToggle"></div>
+                </div>
 
             </div>
 
             <div class="ncc pt-2 pb-2 container-fluid">
                 <h4>Thông tin sản phẩm</h4>
-                <form method="post">
-                    <div <%if(!isCreate) {%>hidden<%}%> class="input dropdown">
-                        <input id="key-product" class="form-control mb-3 " type="text"
-                               placeholder="Tìm kiếm sản phẩm...">
-                        <div class="rbt-menu dropdown-menu w-100" id="dropdown-product"></div>
-                    </div>
-                </form>
-
+                <div <%if(!isCreate) {%>hidden<%}%> class="input dropdown">
+                    <input id="key-product" class="form-control mb-3 shadow-none" type="text"
+                           placeholder="Tìm kiếm sản phẩm...">
+                    <div class="rbt-menu dropdown-menu w-100" id="dropdown-product"></div>
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered">
@@ -255,8 +265,8 @@
                     <%--                    <p id="paid" style="display:block">Đã thanh toán: 0đ</p>--%>
                     <%--                    <p id="rest" style="display:block">Còn phải trả: 52.000.000đ</p>--%>
                     <p></p>
-                    <button <%if(don.getHasPaid()){%>hidden<%}%> class="button btn-create p-1 mb-2"
-                            id="confirm-payment">
+                    <button <%if(don.getHasPaid()){%>hidden<%}%> class="button btn-create p-2 mb-2"
+                            id="confirm-payment" style="width: 140px">
                         Xác nhận thanh toán
                     </button>
                 </div>
@@ -272,8 +282,8 @@
                     <%--                    <p id="total" style="display:block">Tổng tiền: 52.000.000</p>--%>
                     <p></p>
 
-                    <button <%if(don.getHasReceived()){%>hidden<%}%> class="button btn-create p-1 mb-2"
-                            id="confirm-import">
+                    <button <%if(don.getHasReceived()){%>hidden<%}%> class="button btn-create p-2 mb-2"
+                            id="confirm-import" style="width: 140px">
                         Xác nhận nhập kho
                     </button>
                 </div>
@@ -305,74 +315,106 @@
                         aria-label="Close"></button>
             </div>
             <form method="post" action="them-nha-cung-cap" id="formThemNcc">
-            <div class="modal-body">
-                <div class="row align-items-start">
-                    <div class="col">
-                        <div class="item" style="position: relative">
-                            <label class="form-label">Mã nhà cung cấp<span style="color: red"> *</span></label>
-                            <input type="text" class="form-control" placeholder="" name="codeNCC" id="codeNCC">
-                            <span id="warningCodeNcc" class="warningText" hidden="false" ></span>
+                <div class="modal-body">
+                    <div class="row align-items-start">
+                        <div class="col">
+                            <div class="item" style="position: relative">
+                                <label class="form-label">Mã nhà cung cấp<span style="color: red"> *</span></label>
+                                <input type="text" class="form-control" placeholder="" name="codeNCC" id="codeNCC">
+                                <span id="warningCodeNcc" class="warningText" hidden="false"></span>
+                            </div>
+                            <div class="item" style="position: relative">
+                                <label class="form-label">Email<span style="color: red"> *</span></label>
+                                <input type="text" class="form-control" placeholder="" name="emailNCC" id="emailNCC">
+                                <span id="warningMailNcc" class="warningText" hidden="false"></span>
+                            </div>
+                            <div class="item" style="position: relative">
+                                <label class="form-label">Địa chỉ<span style="color: red"> *</span></label>
+                                <input type="text" class="form-control" placeholder="" name="addressNCC"
+                                       id="addressNCC">
+                                <span id="warningAddressNcc" class="warningText" hidden="false"></span>
+                            </div>
                         </div>
-                        <div class="item" style="position: relative">
-                            <label class="form-label">Email<span style="color: red"> *</span></label>
-                            <input type="text" class="form-control" placeholder="" name="emailNCC" id="emailNCC">
-                            <span id="warningMailNcc" class="warningText" hidden="false"></span>
-                        </div>
-                        <div class="item" style="position: relative">
-                            <label class="form-label">Địa chỉ<span style="color: red"> *</span></label>
-                            <input type="text" class="form-control" placeholder="" name="addressNCC"id="addressNCC">
-                            <span id="warningAddressNcc" class="warningText" hidden="false"></span>
+                        <div class="col">
+                            <div class="item" style="position: relative">
+                                <label class="form-label">Tên nhà cung cấp<span style="color: red"> *</span></label>
+                                <input type="text" class="form-control" placeholder="" name="nameNCC" id="nameNCC">
+                                <span id="warningNameNcc" class="warningText" hidden="false"></span>
+                            </div>
+                            <div class="item" style="position: relative">
+                                <label class="form-label">Số điện thoại<span style="color: red"> *</span></label>
+                                <input type="text" class="form-control" placeholder="" name="phoneNCC" id="phoneNCC">
+                                <span id="warningPhoneNcc" class="warningText" hidden="false"></span>
+                            </div>
+                            <%--                        <div>--%>
+                            <%--                            <label style="padding-bottom: 8px;" class="form-label">Khu vực</label><br>--%>
+                            <%--                            <div class="form-check form-check-inline">--%>
+                            <%--                                <input class="form-check-input" type="radio" name="inlineRadioOptions"--%>
+                            <%--                                       id="inlineRadio" value="option1" checked>--%>
+                            <%--                                <label class="form-check-label" for="inlineRadio1">Miền Bắc</label>--%>
+                            <%--                            </div>--%>
+                            <%--                            <div class="form-check form-check-inline">--%>
+                            <%--                                <input class="form-check-input" type="radio" name="inlineRadioOptions"--%>
+                            <%--                                       id="inlineRadio1" value="option2">--%>
+                            <%--                                <label class="form-check-label" for="inlineRadio2">Miền Trung</label>--%>
+                            <%--                            </div>--%>
+                            <%--                            <div class="form-check form-check-inline">--%>
+                            <%--                                <input class="form-check-input" type="radio" name="inlineRadioOptions"--%>
+                            <%--                                       id="inlineRadio2" value="option2">--%>
+                            <%--                                <label class="form-check-label" for="inlineRadio2">Miền Nam</label>--%>
+                            <%--                            </div>--%>
+                            <%--                        </div>--%>
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="item" style="position: relative">
-                            <label class="form-label">Tên nhà cung cấp<span style="color: red"> *</span></label>
-                            <input type="text" class="form-control" placeholder="" name="nameNCC"id="nameNCC">
-                            <span id="warningNameNcc" class="warningText" hidden="false"></span>
-                        </div>
-                        <div class="item" style="position: relative">
-                            <label class="form-label">Số điện thoại<span style="color: red"> *</span></label>
-                            <input type="text" class="form-control" placeholder="" name="phoneNCC" id="phoneNCC">
-                            <span id="warningPhoneNcc" class="warningText" hidden="false"></span>
-                        </div>
-<%--                        <div>--%>
-<%--                            <label style="padding-bottom: 8px;" class="form-label">Khu vực</label><br>--%>
-<%--                            <div class="form-check form-check-inline">--%>
-<%--                                <input class="form-check-input" type="radio" name="inlineRadioOptions"--%>
-<%--                                       id="inlineRadio" value="option1" checked>--%>
-<%--                                <label class="form-check-label" for="inlineRadio1">Miền Bắc</label>--%>
-<%--                            </div>--%>
-<%--                            <div class="form-check form-check-inline">--%>
-<%--                                <input class="form-check-input" type="radio" name="inlineRadioOptions"--%>
-<%--                                       id="inlineRadio1" value="option2">--%>
-<%--                                <label class="form-check-label" for="inlineRadio2">Miền Trung</label>--%>
-<%--                            </div>--%>
-<%--                            <div class="form-check form-check-inline">--%>
-<%--                                <input class="form-check-input" type="radio" name="inlineRadioOptions"--%>
-<%--                                       id="inlineRadio2" value="option2">--%>
-<%--                                <label class="form-check-label" for="inlineRadio2">Miền Nam</label>--%>
-<%--                            </div>--%>
-<%--                        </div>--%>
-                    </div>
+                    <aside class="col-lg-2 col-sm-4">
+
+                    </aside>
                 </div>
-                <aside class="col-lg-2 col-sm-4">
 
-                </aside>
-            </div>
-
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Thêm</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
             </form>
         </div>
     </div>
 </div>
-<%--<div id="popupNotify">--%>
-<%--    <div id="popupNotifyBody">--%>
-<%--    </div>--%>
-<%--</div>--%>
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div id="toast-success" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i style="color: #28a745; margin-right: 10px;" class="fa-solid fa-check"></i>
+            <strong class="me-auto" style="color: black">Thông báo</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toast-body-success" style="color: black">
+        </div>
+    </div>
+</div>
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div id="toast-failure" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i style="color: #dc3546; margin-right: 10px;" class="fa-solid fa-xmark"></i>
+            <strong class="me-auto" style="color: black">Thông báo</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toast-body-failure" style="color: black">
+        </div>
+    </div>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/js/themnhacungcap.js"></script>
 <script>
+    var toastSuccess = document.getElementById('toast-success')
+    var toastFailure = document.getElementById('toast-failure')
     var data = {
         providerId: -1,
         products: [],
@@ -454,12 +496,21 @@
         $('#balance').text(format(balance))
     }
 
-    function getBodyRequest() {
+    function getCreateBillBody() {
         return {
             code: $("#code").val(),
             products: data.products,
             // discount: data.discount,
             providerId: data.provider
+        }
+    }
+
+    function getUpdateBillBody() {
+        return {
+            id: $("#bill-id").val(),
+            confirmTime: $("#confirm-time").val(),
+            importTime: $("#import-time").val(),
+            paymentTime: $("#payment-time").val()
         }
     }
 
@@ -528,7 +579,7 @@
     function searchProduct() {
         const value = $("#key-product").val()
         $.ajax({
-            url: `/MatHang/search-product?name =\${value}`,
+            url: `/MatHang/search-product?name=\${value}`,
             type: 'GET',
             dataType: 'json',
         }).done(function (data) {
@@ -560,8 +611,7 @@
     }
 
     $("#create-bill").on('click', function () {
-        debugger
-        var data = getBodyRequest();
+        var data = getCreateBillBody();
         $.ajax({
             url: `/MatHang/create-bill`,
             type: 'POST',
@@ -569,53 +619,57 @@
             data: JSON.stringify(data),
             success: function (result) {
                 if (result.isSuccessful) {
-                    setShowMessageAferReload(result.message)
+                    $('#key-provider').val(null)
+                    setShowMessageAferReload(result.message, result.isSuccessful)
                     window.location.href = `/MatHang/cap-nhat-don-nhap-hang?id=\${result.id}`
+                } else {
+                    showError(result.message)
                 }
             }
         });
     })
 
     $("#confirm-bill").on('click', function () {
-        var data = getBodyRequest();
+        var data = getUpdateBillBody();
         $.ajax({
             url: `/MatHang/confirm-bill`,
             type: 'POST',
             dataType: 'json',
-            data: {'id': $('#bill-id').val()},
+            data: data,
             success: function (result) {
-                setShowMessageAferReload(result.message)
+                setShowMessageAferReload(result.message, result.isSuccessful)
             }
         });
     })
 
     $("#confirm-import").on('click', function () {
-        var data = getBodyRequest();
+        var data = getUpdateBillBody();
         $.ajax({
             url: `/MatHang/confirm-import`,
             type: 'POST',
             dataType: 'json',
-            data: {'id': $('#bill-id').val()},
+            data: data,
             success: function (result) {
-                setShowMessageAferReload(result.message)
+                setShowMessageAferReload(result.message, result.isSuccessful)
             }
         });
     })
 
     $("#confirm-payment").on('click', function () {
-        var data = getBodyRequest();
+        var data = getUpdateBillBody();
         $.ajax({
             url: `/MatHang/confirm-payment`,
             type: 'POST',
             dataType: 'json',
-            data: {'id': $('#bill-id').val()},
+            data: data,
             success: function (result) {
-                setShowMessageAferReload(result.message)
+                setShowMessageAferReload(result.message, result.isSuccessful)
             }
         });
     })
 
-    function setShowMessageAferReload(message) {
+    function setShowMessageAferReload(message, isSuccessful) {
+        sessionStorage.isSuccessful = isSuccessful
         sessionStorage.showMessage = 'true';
         sessionStorage.message = message;
         window.location.reload();
@@ -623,23 +677,31 @@
 
     function init() {
         if (sessionStorage.showMessage == 'true') {
-            sessionStorage.showMessage = 'false';
-            alert(sessionStorage.message);
+            sessionStorage.showMessage = 'false'
+            if (sessionStorage.isSuccessful == 'true') {
+                showSuccess(sessionStorage.message);
+            } else {
+                showError(sessionStorage.message);
+            }
         }
         searchProvider()
         searchProduct()
     }
 
+    function showSuccess(message) {
+        const toast = new bootstrap.Toast(toastSuccess)
+        $("#toast-body-success").text(message)
+        toast.show()
+    }
+
+    function showError(message) {
+        const toast = new bootstrap.Toast(toastFailure)
+        $("#toast-body-failure").text(message)
+        toast.show()
+    }
+
     init()
-
-
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script type="module" src="${pageContext.request.contextPath}/js/themnhacungcap.js"></script>
 
 </body>
 
