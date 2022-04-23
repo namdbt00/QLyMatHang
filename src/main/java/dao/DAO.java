@@ -6,15 +6,15 @@ import java.sql.DriverManager;
 public class DAO {
     public static Connection con;
 
-    public DAO() {
-        if (con == null) {
+    public DAO(){
+        if(con == null){
             String dbUrl =
-                    "jdbc:mysql://azuinst.tk:3306/qlmathang?autoReconnect=false&useSSL=true&clientInteractive=true";
+                    "jdbc:mysql://localhost:3306/qlmathang?autoReconnect=false&useSSL=true&clientInteractive=true";
             String dbClass = "com.mysql.jdbc.Driver";
             try {
                 Class.forName(dbClass);
-                con = DriverManager.getConnection(dbUrl, "admin", "admin@1234");
-            } catch (Exception e) {
+                con = DriverManager.getConnection (dbUrl, "root", "91020.Nam");
+            }catch(Exception e) {
                 e.printStackTrace();
             }
         }
