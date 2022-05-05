@@ -60,26 +60,26 @@ public class SuaMatHangServlet extends HttpServlet {
         url = "/themmathang/suamathang.jsp";
         MatHangDAO matHangDAO = new MatHangDAO();
         int id = Integer.parseInt(request.getParameter("idEdit"));
-        System.out.println("Edit id: " + id);
+//        System.out.println("Edit id: " + id);
         MatHang matHang = matHangDAO.getMatHangById(id);
-        System.out.println("Id mat hang: " + matHang.getId());
+//        System.out.println("Id mat hang: " + matHang.getId());
 
         CategoryDAO categoryDAO = new CategoryDAO();
         categories = categoryDAO.getListCategory();
 
-        for (int i = 0; i < categories.size(); i++) {
-            System.out.println(categories.get(i).getName());
-        }
+//        for (int i = 0; i < categories.size(); i++) {
+//            System.out.println(categories.get(i).getName());
+//        }
 
         // json to list
         if (matHang.getAttribute() != null && !matHang.getAttribute().equals("")) {
             String[] tokens = matHang.getAttribute().split("-");
             List<Atb> listAtb = createListAtbFromJsonString(tokens[0]);
             List<ConversionUnit> listUnit = createListUnitFromJsonString(tokens[1]);
-            System.out.println(matHang.getAttribute());
-            System.out.println(tokens[0]);
-            System.out.println(tokens[1]);
-            System.out.println("List unit:  " + listUnit.size());
+//            System.out.println(matHang.getAttribute());
+//            System.out.println(tokens[0]);
+//            System.out.println(tokens[1]);
+//            System.out.println("List unit:  " + listUnit.size());
             request.setAttribute("listAtb", listAtb);
             request.setAttribute("listUnit", listUnit);
         }
