@@ -181,7 +181,7 @@ public class SuaMatHangServlet extends HttpServlet {
 
         }
 
-        if (!checkdao) {
+        if (checkdao) {
             String htmlMessage = "Sửa thành công";
             String check = "1";
 
