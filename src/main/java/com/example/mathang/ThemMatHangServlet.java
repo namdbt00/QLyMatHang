@@ -90,7 +90,24 @@ public class ThemMatHangServlet extends HttpServlet {
         int numRowAtb = Integer.parseInt(request.getParameter("numatb"));
         int numRowUnit = Integer.parseInt(request.getParameter("numunit"));
 
-        attribute = createAttributeString(numRowAtb, numRowUnit, request);
+        List<Atb> atbs = new ArrayList<>();
+        List<ConversionUnit> units = new ArrayList<>();
+        for(int i = 0; i < numRowAtb; i++){
+            int k = i+1;
+            String atbName1 = request.getParameter("atbName"+k);
+            String atbValue1 = request.getParameter("atbValue"+k);
+            Atb atb = new Atb(atbName1, atbValue1);
+            atbs.add(atb);
+        }
+        for(int i = 0; i < numRowUnit; i++){
+            int k = i+1;
+            String unitName1 = request.getParameter("unitName"+k);
+            Integer unitValue1 = Integer.parseInt(request.getParameter("unitValue"+k));
+            ConversionUnit unit1 = new ConversionUnit(unitName1, unitValue1);
+            units.add(unit1);
+        }
+
+        attribute = createAttributeString(atbs, units);
 
         Category category = getCategoryById(categoryId);
         MatHang mathang = buildMatHang(code, name, image, retailPrice,
@@ -119,24 +136,9 @@ public class ThemMatHangServlet extends HttpServlet {
 
     }
 
-    private String createAttributeString(int numRowAtb, int numRowUnit, HttpServletRequest request) {
+    public String createAttributeString(List<Atb> atbs, List<ConversionUnit> units) {
         String attribute = "";
-        List<Atb> atbs =new ArrayList<>();
-        List<ConversionUnit> units = new ArrayList<>();
-        for(int i = 0; i < numRowAtb; i++){
-            int k = i+1;
-            String atbName1 = request.getParameter("atbName"+k);
-            String atbValue1 = request.getParameter("atbValue"+k);
-            Atb atb = new Atb(atbName1, atbValue1);
-            atbs.add(atb);
-        }
-        for(int i = 0; i < numRowUnit; i++){
-            int k = i+1;
-            String unitName1 = request.getParameter("unitName"+k);
-            Integer unitValue1 = Integer.parseInt(request.getParameter("unitValue"+k));
-            ConversionUnit unit = new ConversionUnit(unitName1, unitValue1);
-            units.add(unit);
-        }
+
         String jsonAtb = new Gson().toJson(atbs);
         String jsonUnit = new Gson().toJson(units);
 
