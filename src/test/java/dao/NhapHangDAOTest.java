@@ -37,7 +37,7 @@ class NhapHangDAOTest {
         keyword = "27";
         lisDonNhapHang = nhapHangDAO.getListDonNhapHang("search", keyword);
         assertNotNull(lisDonNhapHang);
-        assertEquals(6, lisDonNhapHang.size());
+        assertEquals(12, lisDonNhapHang.size());
 
 
         //Search-filter
@@ -77,5 +77,6 @@ class NhapHangDAOTest {
         // Test case1
         lisDonNhapHang = nhapHangDAO.getListDonNhapHang("default", "");
         assertNotNull(lisDonNhapHang);
+        assertEquals(30, lisDonNhapHang.size());
     }
 }
