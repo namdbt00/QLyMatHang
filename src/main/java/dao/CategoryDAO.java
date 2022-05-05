@@ -28,6 +28,7 @@ public class CategoryDAO extends DAO{
             }
         }catch(Exception e) {
             e.printStackTrace();
+            return null;
         }
         return arrayList;
     }
