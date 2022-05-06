@@ -8,12 +8,12 @@ public class DAO {
 
     public DAO() {
         if (con == null) {
-            String dbUrl =
-                    "jdbc:mysql://localhost:3306/qlmathang?autoReconnect=false&useSSL=true&clientInteractive=true";
-            String dbClass = "com.mysql.jdbc.Driver";
+            String dbUrl = "jdbc:mysql://localhost:3306/qlmathang?" +
+                    "autoReconnect=false&useSSL=true&clientInteractive=true";
+            String dbClass = "com.mysql.cj.jdbc.Driver";
             try {
                 Class.forName(dbClass);
-                con = DriverManager.getConnection(dbUrl, "root", "123456789");
+                con = DriverManager.getConnection(dbUrl, "root", "");
             } catch (Exception e) {
                 e.printStackTrace();
             }

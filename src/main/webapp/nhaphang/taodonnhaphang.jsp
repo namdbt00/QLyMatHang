@@ -468,7 +468,7 @@
         const total = quantity * price
         const product = data['products'].find(item => item.id == id)
         product['quantity'] = Number(quantity)
-        product['price'] = Number(price)
+        product['importPrice'] = Number(price)
         product['total'] = Number(total)
         $('#product-total-' + id).text(format(total))
         calculateBill()
@@ -536,7 +536,7 @@
         data['products'].push({
             id: Number(id),
             quantity: 0,
-            price: 0,
+            importPrice: 0,
             total: 0
         })
         addRow(id, code, name)

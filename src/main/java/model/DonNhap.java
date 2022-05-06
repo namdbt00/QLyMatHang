@@ -1,5 +1,6 @@
 package model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.*;
 
 import java.util.Date;
@@ -31,9 +32,11 @@ public class DonNhap {
     @AllArgsConstructor
     public static class Product {
         private Integer id;
+        @SerializedName("importPrice")
         private Long price;
         private Integer quantity;
         private String name;
+        @SerializedName("matHangCode")
         private String code;
     }
 
