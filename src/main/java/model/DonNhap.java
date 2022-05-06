@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 @ToString
 @AllArgsConstructor
+@EqualsAndHashCode
 public class DonNhap {
     private Integer id;
     private String code;
@@ -30,6 +31,7 @@ public class DonNhap {
     @Builder
     @ToString
     @AllArgsConstructor
+    @EqualsAndHashCode
     public static class Product {
         private Integer id;
         @SerializedName("importPrice")

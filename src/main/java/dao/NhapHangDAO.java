@@ -71,7 +71,7 @@ public class NhapHangDAO extends DAO {
         return lisDonNhapHang;
     }
 
-    public String getNewCode() {
+    public String taoMaNhapHang() {
         String sql = "call getMaDonMoiNhat()";
         String code = "PH000001";
         if (con == null) return code;
@@ -89,7 +89,7 @@ public class NhapHangDAO extends DAO {
         return code;
     }
 
-    public Integer createNew(DonNhap data) {
+    public Integer taoDonNhapHang(DonNhap data) {
         String sql = "call taoDonMoi(?,?,?)";
         try {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -129,7 +129,7 @@ public class NhapHangDAO extends DAO {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            String json = null;
+            String json;
             if (rs.next()) {
                 Integer providerId = rs.getInt("nhaCungCapID");
                 DonNhap don = DonNhap.builder()

@@ -19,7 +19,7 @@ public class TaoDonNhapHang extends HttpServlet {
     ) throws IOException, ServletException {
         String url = "/nhaphang/taodonnhaphang.jsp";
         NhapHangDAO dao = new NhapHangDAO();
-        String code = dao.getNewCode();
+        String code = dao.taoMaNhapHang();
         request.setAttribute("code", code);
         request.setAttribute("isCreate", true);
         RequestDispatcher dispatcher = getServletContext()
