@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NhapHangDAO extends DAO {
@@ -70,7 +71,7 @@ public class NhapHangDAO extends DAO {
         return lisDonNhapHang;
     }
 
-    public String getNewCode() {
+    public String taoMaNhapHang() {
         String sql = "call getMaDonMoiNhat()";
         String code = "PH000001";
         if (con == null) return code;
@@ -88,7 +89,7 @@ public class NhapHangDAO extends DAO {
         return code;
     }
 
-    public Integer createNew(DonNhap data) {
+    public Integer taoDonNhapHang(DonNhap data) {
         String sql = "call taoDonMoi(?,?,?)";
         try {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -128,6 +129,7 @@ public class NhapHangDAO extends DAO {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
+            String json;
             if (rs.next()) {
                 Integer providerId = rs.getInt("nhaCungCapID");
                 DonNhap don = DonNhap.builder()
@@ -141,27 +143,12 @@ public class NhapHangDAO extends DAO {
                         .confirmTime(rs.getTimestamp("confirmDate"))
                         .createdTime(rs.getTimestamp("createdDate"))
                         .build();
+                json = rs.getString("listProducts");
                 NhaCungCapDAO dao = new NhaCungCapDAO();
                 NhaCungCap ncc = dao.layNhaCungCap(providerId);
                 don.setProvider(ncc);
-
-                sql = "SELECT mathang.matHangID, mathang.matHangCode, quantity, importPrice, name from mathang " +
-                        "left join don_mathang on mathang.matHangID = don_mathang.matHangID where donId = ?";
-                ps = con.prepareStatement(sql);
-                ps.setInt(1, id);
-                rs = ps.executeQuery();
-                ArrayList<DonNhap.Product> list = new ArrayList<>();
-                while (rs.next()) {
-                    DonNhap.Product pro = DonNhap.Product.builder()
-                            .id(rs.getInt("matHangID"))
-                            .name(rs.getString("name"))
-                            .code(rs.getString("matHangCode"))
-                            .price(rs.getLong("importPrice"))
-                            .quantity(rs.getInt("quantity"))
-                            .build();
-                    list.add(pro);
-                }
-                don.setProducts(list);
+                DonNhap.Product[] list = new Gson().fromJson(json, DonNhap.Product[].class);
+                don.setProducts(Arrays.asList(list));
                 return don;
             } else return null;
         } catch (Exception e) {
@@ -171,7 +158,7 @@ public class NhapHangDAO extends DAO {
     }
 
     public boolean xacNhanDonNhapHang(Integer id, Long paymentTime, Long importTime) {
-        String sql = "call updateDon(?,?,?,?,?,?,?,null)";
+        String sql = "call updateDon(?,?,?,?,?,?,?)";
         try {
             Timestamp confirmT = new Timestamp(System.currentTimeMillis());
             Timestamp importT = importTime == -1 ? null : new Timestamp(importTime);
@@ -192,7 +179,7 @@ public class NhapHangDAO extends DAO {
     }
 
     public boolean xacNhanDaNhapHang(Integer id, Long confirmTime, Long paymentTime) {
-        String sql = "call updateDon(?,?,?,?,?,?,?,null)";
+        String sql = "call updateDon(?,?,?,?,?,?,?)";
         try {
             Timestamp importT = new Timestamp(System.currentTimeMillis());
             Timestamp confirmT = confirmTime == -1 ? null : new Timestamp(confirmTime);
@@ -213,7 +200,7 @@ public class NhapHangDAO extends DAO {
     }
 
     public boolean xacNhanDaThanhToan(Integer id, Long confirmTime, Long importTime) {
-        String sql = "call updateDon(?,?,?,?,?,?,?,null)";
+        String sql = "call updateDon(?,?,?,?,?,?,?)";
         try {
             Timestamp paymentT = new Timestamp(System.currentTimeMillis());
             Timestamp importT = importTime == -1 ? null : new Timestamp(importTime);

@@ -6,14 +6,11 @@ import model.Category;
 import model.ConversionUnit;
 import model.MatHang;
 import org.junit.jupiter.api.Test;
-import sun.management.counter.Units;
 
-import javax.servlet.http.Part;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SuaMatHangServletTest {
 
@@ -32,7 +29,7 @@ class SuaMatHangServletTest {
         ArrayList<Atb> listAtb = smhS.createListAtbFromJsonString(strJSON);
         ArrayList<Atb> expectedList = new ArrayList<>();
         expectedList.add(new Atb("Kích cỡ", "X"));
-        expectedList.add(new Atb("Kích cỡ ", "Y" ));
+        expectedList.add(new Atb("Kích cỡ ", "Y"));
         assertEquals(listAtb.size(), expectedList.size());
         assertEquals(listAtb.get(0).getAtbName(), expectedList.get(0).getAtbName());
         assertEquals(listAtb.get(0).getAtbValue(), expectedList.get(0).getAtbValue());
@@ -68,17 +65,17 @@ class SuaMatHangServletTest {
 
     @Test
     void testBuildMatHang() {
-        Long id = Long.parseLong(1+"");
+        Long id = Long.parseLong(1 + "");
         String code = "ABC";
         String name = "Ao phong";
         InputStream image = null;
         Double retailPrice = Double.parseDouble("255");
         Double wholesalePrice = Double.parseDouble("100");
-        Integer unit = Integer.parseInt(1+"");
+        Integer unit = Integer.parseInt(1 + "");
         String calculateUnit = "Cai";
         Float weight = Float.parseFloat("15");
         String description = "Day la mat hang test";
-        Integer categoryId = Integer.parseInt(1+"");
+        Integer categoryId = Integer.parseInt(1 + "");
         String attribute = "[{\"atbName\":\"Kích cỡ\",\"atbValue\":\"X\"},{\"atbName\":\"Kích cỡ \",\"atbValue\":\"Y\"}]-[{\"unitName\":\"Thùng\",\"unitValue\":30}]";
         SuaMatHangServlet smhS = new SuaMatHangServlet();
         CategoryDAO categoryDAO = new CategoryDAO();
@@ -118,16 +115,16 @@ class SuaMatHangServletTest {
 
     @Test
     void testBuildMatHangWithoutImage() {
-        Long id = Long.parseLong(1+"");
+        Long id = Long.parseLong(1 + "");
         String code = "ABC";
         String name = "Ao phong";
         Double retailPrice = Double.parseDouble("255");
         Double wholesalePrice = Double.parseDouble("100");
-        Integer unit = Integer.parseInt(1+"");
+        Integer unit = Integer.parseInt(1 + "");
         String calculateUnit = "Cai";
         Float weight = Float.parseFloat("15");
         String description = "Day la mat hang test";
-        Integer categoryId = Integer.parseInt(1+"");
+        Integer categoryId = Integer.parseInt(1 + "");
         String attribute = "[{\"atbName\":\"Kích cỡ\",\"atbValue\":\"X\"},{\"atbName\":\"Kích cỡ \",\"atbValue\":\"Y\"}]-[{\"unitName\":\"Thùng\",\"unitValue\":30}]";
         SuaMatHangServlet smhS = new SuaMatHangServlet();
         CategoryDAO categoryDAO = new CategoryDAO();

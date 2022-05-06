@@ -10,6 +10,7 @@ import java.io.Serializable;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class NhaCungCap implements Serializable {
     private Long id;
     private String name;

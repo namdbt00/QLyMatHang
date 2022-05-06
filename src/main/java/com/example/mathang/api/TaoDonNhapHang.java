@@ -56,7 +56,7 @@ public class TaoDonNhapHang extends HttpServlet {
                 }
             }
             if (message == null) {
-                Integer id = dao.createNew(body);
+                Integer id = dao.taoDonNhapHang(body);
                 if (id != -1) {
                     message = ResponseMessage.builder()
                             .message("Tạo đơn nhập hàng thành công")
