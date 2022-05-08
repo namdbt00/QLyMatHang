@@ -53,7 +53,7 @@
     </nav>
     <div class="flex-grow-1">
         <menu class="d-flex justify-content-end">
-            <div id="logout-btn" onclick="logOut()" class="d-flex align-items-center">
+            <div id="logout-btn"  class="d-flex align-items-center">
                 <i class="fa-solid fa-arrow-right-from-bracket fa-lg"></i>
                 Đăng xuất
             </div>
@@ -61,13 +61,13 @@
         <!--  phần nhét code -->
         <main>
             <div class="header-main">
-                <h4>Danh sách mặt hàng</h4>
+                <h4 style="font-weight: bold">Danh sách mặt hàng</h4>
             </div>
             <div class="background-main">
                 <div class="toolbar d-flex justify-content-between">
                     <form action="search" method="post">
                         <div id="search" class="input-group mb-3">
-                            <input name="txt" type="text" class="form-control shadow-none" placeholder="Tìm kiếm">
+                            <input name="txt" type="text" class="form-control shadow-none" placeholder="Tìm theo tên mặt hàng">
                             <button type="submit" class="input-group-text" title="Tìm kiếm"><i
                                     class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
@@ -142,12 +142,11 @@
             window.location = "delete?id=" + id;
         }
     }
-
-    function logOut() {
-        if (confirm("Bạn có muốn đăng xuất không ?")) {
-            window.location.href = "/MatHang/"
+    $("#logout-btn").click(function() {
+        window.location.href = "/MatHang/";
         }
-    }
+    );
+
 </script>
 </body>
 

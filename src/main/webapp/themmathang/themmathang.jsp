@@ -62,10 +62,7 @@
     </nav>
     <div class="flex-grow-1">
         <menu class="d-flex justify-content-end">
-            <div id="logout-btn" class="d-flex align-items-center">
-                <i class="fa-solid fa-arrow-right-from-bracket fa-lg"></i>
-                Đăng xuất
-            </div>
+
         </menu>
         <% if ((application.getAttribute("check") == "1") && (application.getAttribute("messages") != null)) {%>
         <div id="popupNotify">
@@ -80,7 +77,12 @@
         <form id="formThem" action="<%= request.getContextPath() %>/them-mat-hang" class="form__add-product form-submit" method="POST" enctype="multipart/form-data" autocomplete="off">
             <div class="app__add-product">
                 <div class="content__header">
-                    <div class="content__name defaultCursor">Thêm mặt hàng</div>
+                    <div class="content__name defaultCursor">
+                        <a href="/MatHang/trangchu">
+                            <i class="fa-solid fa-arrow-left-long me-2 fa-lg" style="cursor: pointer"></i>
+                        </a>
+                        Thêm mặt hàng
+                    </div>
                     <!-- <div class="btn-accept"> -->
                     <!-- <a href="" class="btn-accept-link">Xác nhận</a> -->
                     <div id="successNotify"></div>
