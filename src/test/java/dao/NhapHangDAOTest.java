@@ -6,10 +6,7 @@ import model.NhaCungCap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -140,7 +137,33 @@ class NhapHangDAOTest {
     }
 
     @Test
-    void tao_don_nhap_hang() {
+    void tao_don_nhap_hang() throws SQLException {
+        DAO.con.setAutoCommit(false);
+        String ma = dao.taoMaNhapHang();
+        NhaCungCap ncc = NhaCungCap.builder().id(1L)
+                .name("WorldWide Engineering Co.")
+                .code("FC151243").email("Keven.Darling@nowhere.com")
+                .phone("0523293978").address("Quảng Trị")
+                .build();
+        DonNhap.Product pro = DonNhap.Product.builder()
+                .code("BH1232415").name("Bánh kem")
+                .quantity(20).price(120L).id(111)
+                .build();
+        DonNhap don = DonNhap.builder()
+                .providerId(Math.toIntExact(ncc.getId()))
+                .code(ma).hasReceived(false).hasConfirmed(false)
+                .hasPaid(false).products(Collections.singletonList(pro))
+                .provider(ncc).id(44).build();
 
+        Integer id = dao.taoDonNhapHang(don);
+        DonNhap created = dao.layDonNhapHang(id);
+
+        don.setId(id);
+        don.setProviderId(null);
+        don.getProducts().get(0).setId(null);
+        don.setCreatedTime(created.getCreatedTime());
+
+        assertEquals(don, created);
+        DAO.con.rollback();
     }
 }
