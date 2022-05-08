@@ -28,6 +28,7 @@ public class DonNhap {
     private Date createdTime;
 
     @Getter
+    @Setter
     @Builder
     @ToString
     @AllArgsConstructor

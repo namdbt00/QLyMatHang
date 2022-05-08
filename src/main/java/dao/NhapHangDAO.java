@@ -148,7 +148,11 @@ public class NhapHangDAO extends DAO {
                 NhaCungCap ncc = dao.layNhaCungCap(providerId);
                 don.setProvider(ncc);
                 DonNhap.Product[] list = new Gson().fromJson(json, DonNhap.Product[].class);
-                don.setProducts(Arrays.asList(list));
+                if(list==null){
+                    don.setProducts(new ArrayList<>());
+                } else {
+                    don.setProducts(Arrays.asList(list));
+                }
                 return don;
             } else return null;
         } catch (Exception e) {
