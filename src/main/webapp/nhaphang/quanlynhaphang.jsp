@@ -84,7 +84,7 @@
         <div class="body">
 
             <div class="top container-fluid p-3 d-flex justify-content-between" style="width: 99%">
-                <h4>Đơn nhập hàng</h4>
+                <h4 style="font-weight: bold">Đơn nhập hàng</h4>
                 <div>
                     <a href="tao-don-nhap-hang">
                         <button type="button" title="Tạo đơn nhập hàng" class="btn btn-primary btn-save"><i
@@ -214,7 +214,6 @@
 
     document.getElementById("search").focus();
     $(".sidebar-item").click(function () {
-        debugger
         $(".sidebar-item").removeClass("active");
         $(this).addClass("active");
         var value = $(this).attr("value");
@@ -224,6 +223,10 @@
             window.location.href = "/MatHang/quan-ly-nhap-hang";
         }
     });
+    $("#logout-btn").click(function() {
+            window.location.href = "/MatHang/";
+        }
+    );
 </script>
 </body>
 

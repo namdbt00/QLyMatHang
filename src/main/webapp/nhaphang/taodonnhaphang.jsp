@@ -103,10 +103,7 @@
     </nav>
     <div class="flex-grow-1">
         <menu class="d-flex justify-content-end">
-            <div id="logout-btn" class="d-flex align-items-center">
-                <i class="fa-solid fa-arrow-right-from-bracket fa-lg"></i>
-                Đăng xuất
-            </div>
+
         </menu>
 
 
@@ -117,7 +114,7 @@
                         <a class="pt-1" href="quan-ly-nhap-hang"
                            style="margin-right:10px;"><i
                                 class="fa-solid fa-arrow-left"></i></a>
-                        <h4>Đơn nhập hàng</h4>
+                        <h4 style="font-weight: bold">Đơn nhập hàng</h4>
                     </div>
 
                     <%if (isCreate) {%>
