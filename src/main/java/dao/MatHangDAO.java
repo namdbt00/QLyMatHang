@@ -56,7 +56,6 @@ public class MatHangDAO extends DAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(result.getName());
         return result;
     }
 

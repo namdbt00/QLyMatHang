@@ -175,7 +175,7 @@ public class ThemMatHangServlet extends HttpServlet {
         return mathang;
     }
 
-    private boolean daoProcesssing(MatHang mathang) {
+    public boolean daoProcesssing(MatHang mathang) {
         MatHangDAO matHangDAO = new MatHangDAO();
         boolean check = matHangDAO.saveMatHang(mathang);
         return check;

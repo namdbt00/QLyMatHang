@@ -1,14 +1,19 @@
 package com.example.mathang;
 
 import dao.CategoryDAO;
+import dao.MatHangDAO;
+import lombok.SneakyThrows;
 import model.Atb;
 import model.Category;
 import model.ConversionUnit;
 import model.MatHang;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -166,5 +171,163 @@ class SuaMatHangServletTest {
         String expectedString = "Đây là xâu hương ơ";
         String str = smhS.toUTF8String("Đây là xâu hương ơ");
         assertEquals(expectedString.length(), str.length());
+    }
+
+    @Test
+    void testCreateAttributeString() {
+        SuaMatHangServlet smhS = new SuaMatHangServlet();
+        String expectedString = "[{\"atbName\":\"Kích cỡ\",\"atbValue\":\"X\"},{\"atbName\":\"Kích cỡ \",\"atbValue\":\"Y\"}]-" +
+                "[{\"unitName\":\"Thùng\",\"unitValue\":30}]";
+        List<Atb> atbs = new ArrayList<>();
+        List<ConversionUnit> units = new ArrayList<>();
+
+        atbs.add(new Atb("Kích cỡ", "X"));
+        atbs.add(new Atb("Kích cỡ ", "Y" ));
+        units.add(new ConversionUnit("Thùng", 30));
+        String str = smhS.createAttributeString(atbs, units);
+
+        assertEquals(expectedString.length(), str.length());
+    }
+
+    @SneakyThrows
+    @Test
+    void testDaoUpdateWithImage() {
+        SuaMatHangServlet smhS = new SuaMatHangServlet();
+        String code = "ABC";
+        String name = "Ao phong";
+        String initialString = "text";
+        InputStream image = new ByteArrayInputStream(initialString.getBytes());
+        Double retailPrice = Double.parseDouble("255");
+        Double wholesalePrice = Double.parseDouble("100");
+        Integer unit = Integer.parseInt(1+"");
+        String calculateUnit = "Cai";
+        Float weight = Float.parseFloat("15");
+        String description = "Day la mat hang test";
+        Integer categoryId = Integer.parseInt(1+"");
+        String attribute = "[{\"atbName\":\"Kích cỡ\",\"atbValue\":\"X\"},{\"atbName\":\"Kích cỡ \",\"atbValue\":\"Y\"}]-[{\"unitName\":\"Thùng\",\"unitValue\":30}]";
+        CategoryDAO categoryDAO = new CategoryDAO();
+        smhS.categories = categoryDAO.getListCategory();
+        Category category = smhS.getCategoryById(categoryId);
+        MatHang expectMatHang = new MatHang();
+        expectMatHang.setCode(code);
+        expectMatHang.setName(name);
+        expectMatHang.setImage(image);
+        expectMatHang.setRetailPrice(retailPrice);
+        expectMatHang.setWholesalePrice(wholesalePrice);
+        expectMatHang.setUnit(unit);
+        expectMatHang.setCalculateUnit(calculateUnit);
+        expectMatHang.setWeight(weight);
+        expectMatHang.setDescription(description);
+        expectMatHang.setCategory(category);
+        expectMatHang.setAttribute(attribute);
+        MatHangDAO mhDAO = new MatHangDAO();
+        MatHang mahangBD = mhDAO.getMatHangById(111);
+        MatHang matHang = smhS.buildMatHang(Long.parseLong(111+""), code, name, image, retailPrice,
+                wholesalePrice, unit, calculateUnit,
+                weight, description, category, attribute);
+        boolean check = smhS.daoUpdateWithImage(matHang);
+        boolean expected = true;
+        assertEquals(expected, check);
+        MatHang mathangUpdated = mhDAO.getMatHangById(111);
+        boolean roleback = smhS.daoUpdateWithImage(mahangBD);
+        assertEquals(matHang.getId(), mathangUpdated.getId());
+        assertEquals(matHang.getCode(), mathangUpdated.getCode());
+        assertEquals(matHang.getName(), mathangUpdated.getName());
+        InputStream i1 = matHang.getImage();
+        InputStream i2 = mathangUpdated.getImage();
+        boolean checkImg = true;
+        try {
+            // do the compare
+            while (true) {
+                int fr = i1.read();
+                int tr = i2.read();
+
+                if (fr != tr){
+                    checkImg = false;
+                    break;
+                }
+
+
+                if (fr == -1) {
+                    checkImg = true;
+                    break;
+                }
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (i1 != null)
+                i1.close();
+            if (i2 != null)
+                i2.close();
+        }
+        boolean checkExpected = true;
+        assertEquals(checkExpected, checkImg);
+        assertEquals(matHang.getRetailPrice(), mathangUpdated.getRetailPrice());
+        assertEquals(matHang.getWholesalePrice(), mathangUpdated.getWholesalePrice());
+        assertEquals(matHang.getUnit(), mathangUpdated.getUnit());
+        assertEquals(matHang.getCalculateUnit(), mathangUpdated.getCalculateUnit());
+        assertEquals(matHang.getWeight(), mathangUpdated.getWeight());
+        assertEquals(matHang.getDescription(), mathangUpdated.getDescription());
+        assertEquals(matHang.getCategory().getName(), mathangUpdated.getCategory().getName());
+        assertEquals(matHang.getAttribute(), mathangUpdated.getAttribute());
+
+
+
+    }
+
+    @Test
+    void testDaoUpdateWithoutImage() {
+        SuaMatHangServlet smhS = new SuaMatHangServlet();
+        String code = "ABC";
+        String name = "Ao phong";
+        String initialString = "text";
+        InputStream image = new ByteArrayInputStream(initialString.getBytes());
+        Double retailPrice = Double.parseDouble("255");
+        Double wholesalePrice = Double.parseDouble("100");
+        Integer unit = Integer.parseInt(1+"");
+        String calculateUnit = "Cai";
+        Float weight = Float.parseFloat("15");
+        String description = "Day la mat hang test";
+        Integer categoryId = Integer.parseInt(1+"");
+        String attribute = "[{\"atbName\":\"Kích cỡ\",\"atbValue\":\"X\"},{\"atbName\":\"Kích cỡ \",\"atbValue\":\"Y\"}]-[{\"unitName\":\"Thùng\",\"unitValue\":30}]";
+        CategoryDAO categoryDAO = new CategoryDAO();
+        smhS.categories = categoryDAO.getListCategory();
+        Category category = smhS.getCategoryById(categoryId);
+        MatHang expectMatHang = new MatHang();
+        expectMatHang.setCode(code);
+        expectMatHang.setName(name);
+        expectMatHang.setRetailPrice(retailPrice);
+        expectMatHang.setWholesalePrice(wholesalePrice);
+        expectMatHang.setUnit(unit);
+        expectMatHang.setCalculateUnit(calculateUnit);
+        expectMatHang.setWeight(weight);
+        expectMatHang.setDescription(description);
+        expectMatHang.setCategory(category);
+        expectMatHang.setAttribute(attribute);
+        MatHangDAO mhDAO = new MatHangDAO();
+        MatHang mahangBD = mhDAO.getMatHangById(111);
+        MatHang matHang = smhS.buildMatHangWithoutImage(Long.parseLong(111+""), code, name, retailPrice,
+                wholesalePrice, unit, calculateUnit,
+                weight, description, category, attribute);
+        boolean check = smhS.daoUpdateWithoutImage(matHang);
+        boolean expected = true;
+        assertEquals(expected, check);
+        MatHang mathangUpdated = mhDAO.getMatHangById(111);
+        boolean roleback = smhS.daoUpdateWithoutImage(mahangBD);
+        assertEquals(matHang.getId(), mathangUpdated.getId());
+        assertEquals(matHang.getCode(), mathangUpdated.getCode());
+        assertEquals(matHang.getName(), mathangUpdated.getName());
+
+        assertEquals(matHang.getRetailPrice(), mathangUpdated.getRetailPrice());
+        assertEquals(matHang.getWholesalePrice(), mathangUpdated.getWholesalePrice());
+        assertEquals(matHang.getUnit(), mathangUpdated.getUnit());
+        assertEquals(matHang.getCalculateUnit(), mathangUpdated.getCalculateUnit());
+        assertEquals(matHang.getWeight(), mathangUpdated.getWeight());
+        assertEquals(matHang.getDescription(), mathangUpdated.getDescription());
+        assertEquals(matHang.getCategory().getName(), mathangUpdated.getCategory().getName());
+        assertEquals(matHang.getAttribute(), mathangUpdated.getAttribute());
     }
 }
