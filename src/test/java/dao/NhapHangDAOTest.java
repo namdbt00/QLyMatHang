@@ -96,7 +96,7 @@ class NhapHangDAOTest {
 
     @Test
     void lay_don_nhap_hang_voi_id_ton_tai() {
-        DonNhap don = dao.layDonNhapHang(44);
+        DonNhap don = dao.layDonNhapHang(38);
         NhaCungCap ncc = NhaCungCap.builder().id(1L)
                 .name("WorldWide Engineering Co.")
                 .code("FC151243").email("Keven.Darling@nowhere.com")

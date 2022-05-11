@@ -22,6 +22,7 @@ public class CapNhaDonNhapHang extends HttpServlet {
         Integer id = Integer.valueOf(request.getParameter("id"));
         NhapHangDAO dao = new NhapHangDAO();
         DonNhap don = dao.layDonNhapHang(id);
+        System.out.println(don);
         if (don == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         } else {
