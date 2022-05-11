@@ -15,15 +15,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MatHangDAOTest {
-//
+    //
     @Test
     void testGetMatHangById() {
         MatHangDAO daoMH = new MatHangDAO();
         MatHang matHang = daoMH.getMatHangById(111);
         String expected = "BH1232415";
-        assertEquals(expected,matHang.getCode());
+        assertEquals(expected, matHang.getCode());
     }
-//
+
+    //
     @Test
     void testSaveMatHang() {
         ThemMatHangServlet tmhS = new ThemMatHangServlet();
@@ -32,11 +33,11 @@ class MatHangDAOTest {
         InputStream image = null;
         Double retailPrice = Double.parseDouble("255");
         Double wholesalePrice = Double.parseDouble("100");
-        Integer unit = Integer.parseInt(1+"");
+        Integer unit = Integer.parseInt(1 + "");
         String calculateUnit = "Cai";
         Float weight = Float.parseFloat("15");
         String description = "Day la mat hang test";
-        Integer categoryId = Integer.parseInt(1+"");
+        Integer categoryId = Integer.parseInt(1 + "");
         String attribute = "[{\"atbName\":\"Kích cỡ\",\"atbValue\":\"X\"},{\"atbName\":\"Kích cỡ \",\"atbValue\":\"Y\"}]-[{\"unitName\":\"Thùng\",\"unitValue\":30}]";
         CategoryDAO categoryDAO = new CategoryDAO();
         tmhS.categories = categoryDAO.getListCategory();
@@ -63,10 +64,11 @@ class MatHangDAOTest {
         assertEquals(expected, check);
         List<MatHang> listMH = daoMH.getall();
         assertEquals(matHang.getCode(), listMH.get(0).getCode());
-        int idMH = Integer.parseInt(listMH.get(0).getId()+"");
+        int idMH = Integer.parseInt(listMH.get(0).getId() + "");
         daoMH.deleteMH(idMH);
     }
-//
+
+    //
     @Test
     void testUpdateMatHangWithoutImage() {
         SuaMatHangServlet smhS = new SuaMatHangServlet();
@@ -76,11 +78,11 @@ class MatHangDAOTest {
         InputStream image = new ByteArrayInputStream(initialString.getBytes());
         Double retailPrice = Double.parseDouble("255");
         Double wholesalePrice = Double.parseDouble("100");
-        Integer unit = Integer.parseInt(1+"");
+        Integer unit = Integer.parseInt(1 + "");
         String calculateUnit = "Cai";
         Float weight = Float.parseFloat("15");
         String description = "Day la mat hang test";
-        Integer categoryId = Integer.parseInt(1+"");
+        Integer categoryId = Integer.parseInt(1 + "");
         String attribute = "[{\"atbName\":\"Kích cỡ\",\"atbValue\":\"X\"},{\"atbName\":\"Kích cỡ \",\"atbValue\":\"Y\"}]-[{\"unitName\":\"Thùng\",\"unitValue\":30}]";
         CategoryDAO categoryDAO = new CategoryDAO();
         smhS.categories = categoryDAO.getListCategory();
@@ -98,7 +100,7 @@ class MatHangDAOTest {
         expectMatHang.setAttribute(attribute);
         MatHangDAO mhDAO = new MatHangDAO();
         MatHang mahangBD = mhDAO.getMatHangById(111);
-        MatHang matHang = smhS.buildMatHangWithoutImage(Long.parseLong(111+""), code, name, retailPrice,
+        MatHang matHang = smhS.buildMatHangWithoutImage(Long.parseLong(111 + ""), code, name, retailPrice,
                 wholesalePrice, unit, calculateUnit,
                 weight, description, category, attribute);
         boolean check = smhS.daoUpdateWithoutImage(matHang);
@@ -119,7 +121,8 @@ class MatHangDAOTest {
         assertEquals(matHang.getCategory().getName(), mathangUpdated.getCategory().getName());
         assertEquals(matHang.getAttribute(), mathangUpdated.getAttribute());
     }
-//
+
+    //
     @SneakyThrows
     @Test
     void testUpdateMatHangWithImage() {
@@ -130,11 +133,11 @@ class MatHangDAOTest {
         InputStream image = new ByteArrayInputStream(initialString.getBytes());
         Double retailPrice = Double.parseDouble("255");
         Double wholesalePrice = Double.parseDouble("100");
-        Integer unit = Integer.parseInt(1+"");
+        Integer unit = Integer.parseInt(1 + "");
         String calculateUnit = "Cai";
         Float weight = Float.parseFloat("15");
         String description = "Day la mat hang test";
-        Integer categoryId = Integer.parseInt(1+"");
+        Integer categoryId = Integer.parseInt(1 + "");
         String attribute = "[{\"atbName\":\"Kích cỡ\",\"atbValue\":\"X\"},{\"atbName\":\"Kích cỡ \",\"atbValue\":\"Y\"}]-[{\"unitName\":\"Thùng\",\"unitValue\":30}]";
         CategoryDAO categoryDAO = new CategoryDAO();
         smhS.categories = categoryDAO.getListCategory();
@@ -153,7 +156,7 @@ class MatHangDAOTest {
         expectMatHang.setAttribute(attribute);
         MatHangDAO mhDAO = new MatHangDAO();
         MatHang mahangBD = mhDAO.getMatHangById(111);
-        MatHang matHang = smhS.buildMatHang(Long.parseLong(111+""), code, name, image, retailPrice,
+        MatHang matHang = smhS.buildMatHang(Long.parseLong(111 + ""), code, name, image, retailPrice,
                 wholesalePrice, unit, calculateUnit,
                 weight, description, category, attribute);
         boolean check = smhS.daoUpdateWithImage(matHang);
@@ -173,7 +176,7 @@ class MatHangDAOTest {
                 int fr = i1.read();
                 int tr = i2.read();
 
-                if (fr != tr){
+                if (fr != tr) {
                     checkImg = false;
                     break;
                 }
@@ -207,7 +210,22 @@ class MatHangDAOTest {
     }
 
     @Test
-    void search() {
+    void tim_mat_hang_theo_ten() {
+        MatHangDAO dao = new MatHangDAO();
+        // key khong co ket qua nao khop
+        String keyword = "xxxxxxxxxx";
+        List<MatHang> list = dao.search(keyword);
+        assertNotNull(list);
+        assertEquals(0, list.size());
+
+        // key co ket qua khop
+        keyword = "band";
+        list = dao.search(keyword);
+        assertNotNull(list);
+        assertEquals(4, list.size());
+        for (MatHang mh : list) {
+            assertTrue(mh.getName().toLowerCase().contains(keyword));
+        }
     }
 
     @Test

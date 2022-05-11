@@ -22,7 +22,6 @@ public class XacNhanDonNhapHang extends HttpServlet {
     ) throws IOException {
         Integer id = Integer.valueOf(req.getParameter("id"));
         Long importTime = Long.valueOf(req.getParameter("importTime"));
-        Long confirmTime = Long.valueOf(req.getParameter("confirmTime"));
         Long paymentTime = Long.valueOf(req.getParameter("paymentTime"));
         NhapHangDAO dao = new NhapHangDAO();
         resp.setContentType("application/json");

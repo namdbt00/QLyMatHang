@@ -3,6 +3,8 @@ package dao;
 import model.NhaCungCap;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class NhaCungCapDAOTest {
@@ -34,5 +36,23 @@ class NhaCungCapDAOTest {
                 .address("Quảng Trị")
                 .build();
         assertEquals(ncc, n);
+    }
+
+    @Test
+    void tim_nha_cung_cap_theo_ten() {
+        // key khong co ket qua nao khop
+        String keyword = "xxxxxxxxxx";
+        List<NhaCungCap> list = dao.search(keyword);
+        assertNotNull(list);
+        assertEquals(0, list.size());
+
+        // key co ket qua khop
+        keyword = "ba";
+        list = dao.search(keyword);
+        assertNotNull(list);
+        assertEquals(2, list.size());
+        for (NhaCungCap ncc : list) {
+            assertTrue(ncc.getName().toLowerCase().contains(keyword));
+        }
     }
 }

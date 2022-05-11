@@ -10,8 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class NhapHangDAOTest {
 
@@ -96,7 +95,7 @@ class NhapHangDAOTest {
 
     @Test
     void lay_don_nhap_hang_voi_id_ton_tai() {
-        DonNhap don = dao.layDonNhapHang(38);
+        DonNhap don = dao.layDonNhapHang(44);
         NhaCungCap ncc = NhaCungCap.builder().id(1L)
                 .name("WorldWide Engineering Co.")
                 .code("FC151243").email("Keven.Darling@nowhere.com")
@@ -164,6 +163,54 @@ class NhapHangDAOTest {
         don.setCreatedTime(created.getCreatedTime());
 
         assertEquals(don, created);
+        DAO.con.rollback();
+    }
+
+    @Test
+    void xac_nhan_don_nhap_hang() throws SQLException {
+        DAO.con.setAutoCommit(false);
+
+        DonNhap don = dao.layDonNhapHang(3);
+        dao.xacNhanDonNhapHang(don.getId(), don.getPaymentTime().getTime(),
+                don.getImportTime().getTime());
+
+        DonNhap don2 = dao.layDonNhapHang(3);
+
+        assertNotNull(don2.getConfirmTime());
+        assertTrue(don2.getHasConfirmed());
+
+        DAO.con.rollback();
+    }
+
+    @Test
+    void xac_nhan_da_nhap_kho() throws SQLException {
+        DAO.con.setAutoCommit(false);
+
+        DonNhap don = dao.layDonNhapHang(3);
+        dao.xacNhanDaNhapHang(don.getId(), don.getConfirmTime().getTime(),
+                don.getPaymentTime().getTime());
+
+        DonNhap don2 = dao.layDonNhapHang(3);
+
+        assertNotNull(don2.getImportTime());
+        assertTrue(don2.getHasReceived());
+
+        DAO.con.rollback();
+    }
+
+    @Test
+    void xac_nhan_da_thanh_toan() throws SQLException {
+        DAO.con.setAutoCommit(false);
+
+        DonNhap don = dao.layDonNhapHang(3);
+        dao.xacNhanDaThanhToan(don.getId(), don.getConfirmTime().getTime(),
+                don.getImportTime().getTime());
+
+        DonNhap don2 = dao.layDonNhapHang(3);
+
+        assertNotNull(don2.getPaymentTime());
+        assertTrue(don2.getHasPaid());
+
         DAO.con.rollback();
     }
 }
