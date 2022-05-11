@@ -39,10 +39,10 @@ public class NhaCungCapDAO extends DAO {
         try {
             CallableStatement cs = con.prepareCall(sql);
             cs.setString(1,nhaCungCap.getCode());
-            cs.setString(2,nhaCungCap.getName());
-            cs.setString(3,nhaCungCap.getEmail());
-            cs.setString(4,nhaCungCap.getPhone());
-            cs.setString(5,nhaCungCap.getAddress());
+            cs.setString(2,nhaCungCap.getEmail());
+            cs.setString(3,nhaCungCap.getPhone());
+            cs.setString(4,nhaCungCap.getAddress());
+            cs.setString(5,nhaCungCap.getName());
 
             cs.executeQuery();
         }catch (Exception e){
