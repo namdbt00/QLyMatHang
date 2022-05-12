@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -230,13 +231,76 @@ class MatHangDAOTest {
 
     @Test
     void getall() {
+        MatHangDAO matHangDAO = new MatHangDAO();
+        List<MatHang> listClient = matHangDAO.getall();
+        assertNotNull(listClient);
+        assertEquals(97, listClient.size());
+
+
+        listClient = matHangDAO.getall();
+        assertNull(listClient);
+        assertEquals(0, listClient.size());
+
     }
 
     @Test
     void deleteMH() {
+        MatHangDAO matHangDAO = new MatHangDAO();
+        Connection con = matHangDAO.con;
+        try{
+            con.setAutoCommit(false);
+            matHangDAO.deleteMH(6);
+            MatHang matHang1 = matHangDAO.getMatHangById(6);
+            assertNull(matHang1.getId());
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                con.rollback();
+                con.setAutoCommit(true);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
     @Test
     void searchByName() {
+        MatHangDAO matHangDAO = new MatHangDAO();
+        //test1
+        String txtSearch = "xxxxxxxxxx";
+        List<MatHang> list = matHangDAO.searchByName(txtSearch);
+        assertNotNull(list);
+        assertEquals(0, list.size());
+
+        //exception scenario 2
+        txtSearch = "rn";
+        list = matHangDAO.searchByName(txtSearch);
+        assertNotNull(list);
+        assertEquals(0, list.size());
+
+        //standard scenario 1
+        txtSearch = "comtinar";
+        list = matHangDAO.searchByName(txtSearch);
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        for(int i=0; i<list.size(); i++){
+            assertTrue(list.get(i).getName().toLowerCase().contains(txtSearch.toLowerCase()));
+        }
+
+        //standard scenario 2
+        txtSearch = "com";
+        list = matHangDAO.searchByName(txtSearch);
+        assertNotNull(list);
+        assertEquals(6, list.size());
+        for(int i=0; i<list.size(); i++){
+            assertTrue(list.get(i).getName().toLowerCase().contains(txtSearch.toLowerCase()));
+        }
+
+        txtSearch="";
+        list = matHangDAO.searchByName(txtSearch);
+        assertNotNull(list);
+        assertEquals(96, list.size());
+        return;
     }
 }

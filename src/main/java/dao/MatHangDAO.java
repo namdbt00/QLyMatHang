@@ -25,6 +25,7 @@ public class MatHangDAO extends DAO {
         MatHang result = new MatHang();
         String sql = "call getMatHangById(?)";
         try {
+
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, matHangId);
             ResultSet rs = ps.executeQuery();
@@ -222,7 +223,6 @@ public class MatHangDAO extends DAO {
     public List<MatHang> searchByName(String txtSearch) {
         List<MatHang> list = new ArrayList<>();
         String sql = "call searchMatHang(?)";
-
         try {
             PreparedStatement st = con.prepareStatement(sql);
             st.setString(1, "%" + txtSearch + "%");

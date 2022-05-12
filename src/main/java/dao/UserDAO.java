@@ -26,6 +26,7 @@ public class UserDAO extends DAO{
                         rs.getString(8));
             }
         }catch (SQLException e){
+
         }
         return null;
     }

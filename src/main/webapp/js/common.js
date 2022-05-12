@@ -13,7 +13,7 @@ Common.ValidateInputBase = function (inputData, type) {
     switch (type) {
         case resource.ValidateType.Required:
             if (inputText.length == 0) {
-                result = "Không dược để trống";
+                result = "Không được để trống";
             }
             break;
         case resource.ValidateType.Number:
